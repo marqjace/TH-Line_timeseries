@@ -200,6 +200,7 @@ filepaths_deployments = [
     # Oct 2024 Deployment
     r'C:/Users/marqjace/TH_line/deployments/oct_2024/transect1/10_24_merged.nc',
     r'C:/Users/marqjace/TH_line/deployments/oct_2024/transect2/11_24_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect1/3_25_merged.nc',
 ]
 
 # Process all transects

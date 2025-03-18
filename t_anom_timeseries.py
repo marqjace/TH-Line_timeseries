@@ -140,4 +140,3 @@ if __name__ == "__main__":
     # Plot data
     plot_data(temp_Xgrid, temp_Ygrid, combined_temp, 'Temperature Anomaly', 'Depth (m)', r'($\degree$C)', 'RdYlBu_r', colors.TwoSlopeNorm(vcenter=0., vmin=-4, vmax=4), [-4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4], "C:/Users/marqjace/seaglider_python/Figures/current_t_anom_timeseries_new.png")
     plot_data(salt_Xgrid, salt_Ygrid, combined_salt, 'Salinity Anomaly', 'Depth (m)', '(PSU)', 'BrBG_r', colors.TwoSlopeNorm(vcenter=0., vmin=-.75, vmax=.75), [-.6, -.4, -.2, .2, .4, .6], "C:/Users/marqjace/seaglider_python/Figures/current_t_anom_timeseries_new.png")
-
