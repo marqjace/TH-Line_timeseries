@@ -50,6 +50,6 @@ def merge_seaglider_data(filenames, output_filename):
     dat.to_netcdf(output_filename)
 
 # Example usage
-# filenames = 'C:/Users/marqjace/TH_line/deployments/oct_2024/transect2/p266*.nc'
-# output_filename = 'C:/Users/marqjace/TH_line/deployments/oct_2024/transect2/11_24_merged.nc'
-# merge_seaglider_data(filenames, output_filename)
+filenames = 'C:/Users/marqjace/TH_line/deployments/mar_2025/transect1/p266*.nc'
+output_filename = 'C:/Users/marqjace/TH_line/deployments/mar_2025/transect1/3_25_merged.nc'
+merge_seaglider_data(filenames, output_filename)
