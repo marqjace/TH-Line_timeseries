@@ -330,6 +330,7 @@ temp_8_24_a= transects_func.temp_8_24_a
 temp_8_24_b= transects_func.temp_8_24_b
 temp_10_24= transects_func.temp_10_24
 temp_11_24= transects_func.temp_11_24
+temp_3_25= transects_func.temp_3_25
 
 # Interpolated & Gridded Salinity
 salt_12_14_a = transects_func.salt_12_14_a
@@ -441,6 +442,7 @@ salt_8_24_a= transects_func.salt_8_24_a
 salt_8_24_b= transects_func.salt_8_24_b
 salt_10_24= transects_func.salt_10_24
 salt_11_24= transects_func.salt_11_24
+salt_3_25= transects_func.salt_3_25
 
 # Time
 time_12_14_a = transects_func.time_12_14_a
@@ -552,6 +554,7 @@ time_8_24_a= transects_func.time_8_24_a
 time_8_24_b= transects_func.time_8_24_b
 time_10_24=transects_func.time_10_24
 time_11_24=transects_func.time_11_24
+time_3_25=transects_func.time_3_25
 
 # Longitude
 lon_12_14_a = transects_func.lon_12_14_a
@@ -663,6 +666,7 @@ lon_8_24_a= transects_func.lon_8_24_a
 lon_8_24_b= transects_func.lon_8_24_b
 lon_10_24= transects_func.lon_10_24
 lon_11_24= transects_func.lon_11_24
+lon_3_25 = transects_func.lon_3_25
 
 
 # Anomaly Calculations
@@ -813,6 +817,9 @@ t_anom_8_24_b = np.subtract(temp_8_24_b, ds_z_t_an8) # Transect 6 Aug 2024
 t_anom_10_24 = np.subtract(temp_10_24, ds_z_t_an10) # Transect 1 Oct 2024
 t_anom_11_24 = np.subtract(temp_11_24, ds_z_t_an11) # Transect 2 Nov 2024
 
+# Mar 2025 Deployment
+t_anom_3_25 = np.subtract(temp_3_25, ds_z_t_an3) # Transect 1 Mar 2025
+
 
 # Salinity Anomaly
 # Create Temperature Anomaly Array For Each Transect Line
@@ -960,6 +967,9 @@ s_anom_8_24_b = np.subtract(salt_8_24_b, ds_z_s_an8) # Transect 6 Aug 2024
 s_anom_10_24 = np.subtract(salt_10_24, ds_z_s_an10) # Transect 1 Oct 2024
 s_anom_11_24 = np.subtract(salt_11_24, ds_z_s_an11) # Transect 2 Nov 2024
 
+# Mar 2025 Deployment
+s_anom_3_25 = np.subtract(salt_3_25, ds_z_s_an3) # Transect 1 Mar 2025
+
 # 200km Inshore Average Timeseries
 
 # Data
@@ -1076,9 +1086,12 @@ transect_times = {
     'tran_8_24_b':np.array([datetime(2024,8,19).toordinal()]),
     'tran_10_24':np.array([datetime(2024,10,28).toordinal()]),
     'tran_11_24':np.array([datetime(2024,11,22).toordinal()]), 
-    'tran_12_24':np.array([datetime(2024,12,15).toordinal()]),   # For cutoff values
-    'tran_1_25':np.array([datetime(2025,1,15).toordinal()]),   # For cutoff values
-    'tran_2_25':np.array([datetime(2025,2,15).toordinal()]),   # For cutoff values
+    'tran_12_24':np.array([datetime(2024,12,15).toordinal()]),   # Fill values
+    'tran_1_25':np.array([datetime(2025,1,15).toordinal()]),   # Fill values
+    'tran_2_25':np.array([datetime(2025,2,15).toordinal()]),   # Fill values
+    'tran_3_25':np.array([datetime(2025,3,13).toordinal()]),
+    'tran_4_25':np.array([datetime(2025,4,15).toordinal()]),   # For cutoff values
+    'tran_5_25':np.array([datetime(2025,5,15).toordinal()]),   # For cutoff values
 }
 
 
@@ -1195,9 +1208,9 @@ transects_temp = {
     '8_24_b': t_anom_8_24_b,
     '10_24': t_anom_10_24,
     '11_24': t_anom_11_24,
-    '12_24': t_anom_11_24,   # Repeating for cutoff values
-    '1_25': t_anom_11_24,   # Repeating for cutoff values
-    '2_25': t_anom_11_24,   # Repeating for cutoff values
+    '3_25': t_anom_3_25,   # Repeating for cutoff values
+    '4_25': t_anom_3_25,   # Repeating for cutoff values
+    '5_25': t_anom_3_25,   # Repeating for cutoff values
 }
 
 combined_temp_data = []
@@ -1406,9 +1419,9 @@ transects_salt = {
     # '8_24_b': s_anom_8_24_b,
     '10_24': s_anom_10_24,
     '11_24': s_anom_11_24,
-    '12_24': s_anom_11_24,  # Repeat for cutoff values
-    '1_25': s_anom_11_24,  # Repeat for cutoff values
-    '2_25': s_anom_11_24,  # Repeat for cutoff values
+    '3_25': s_anom_3_25,  # Repeat for cutoff values
+    '4_25': s_anom_3_25,  # Repeat for cutoff values
+    '5_25': s_anom_3_25,  # Repeat for cutoff values
 }
 
 combined_salt_data = []
@@ -1511,16 +1524,18 @@ deployment1_jul_22 = ax1.hlines(y=570, xmin=datetime(2022,7,29).toordinal(), xma
 deployment1_jan_23 = ax1.hlines(y=570, xmin=datetime(2023,1,26).toordinal(), xmax=datetime(2023,8,14).toordinal(), color='k')
 deployment1_oct_23 = ax1.hlines(y=570, xmin=datetime(2023,10,13).toordinal(), xmax=datetime(2024,4,12).toordinal(), color='k')
 deployment1_apr_24 = ax1.hlines(y=570, xmin=datetime(2024,4,12).toordinal(), xmax=datetime(2024,8,9).toordinal(), color='k')
-deployment1_oct_24 = ax1.hlines(y=570, xmin=datetime(2024,10,21).toordinal(), xmax=temp_Xgrid.max(), color='k')
+deployment1_oct_24 = ax1.hlines(y=570, xmin=datetime(2024,10,21).toordinal(), xmax=datetime(2024,12,4).toordinal(), color='k')
+deployment1_mar_25 = ax1.hlines(y=570, xmin=datetime(2024,3,21).toordinal(), xmax=temp_Xgrid.max(), color='k')
+
 ax1.clabel(lines1, lines1.levels, inline=True, fontsize=10)
 ax1.invert_yaxis()
 ax1.set_ylabel('Depth (m)')
 ax1.text(datetime(2022,7,15).toordinal(), 530, 'Temperature Anomaly', fontsize='large')
 ax1.set_yticks((0, 200, 400, 600))
 ax1.set_xticks((datetime(2015,1,1).toordinal(), datetime(2016,1,1).toordinal(), datetime(2017,1,1).toordinal(), datetime(2018,1,1).toordinal(), datetime(2019,1,1).toordinal(), datetime(2020,1,1).toordinal(), datetime(2021,1,1).toordinal(),
-               datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal()))
-ax1.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'))
-ax1.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,1,1).toordinal())
+               datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal(), datetime(2025,1,1).toordinal()))
+ax1.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'))
+ax1.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,5,1).toordinal())
 ax1.set_ylim(600, 0)
 ax1.spines[:].set_linewidth(2)
 ax1.tick_params(width=2, top=True, right=True, direction='in')
@@ -1547,7 +1562,8 @@ deployment2_jul_22 = ax2.hlines(y=570, xmin=datetime(2022,7,29).toordinal(), xma
 deployment2_jan_23 = ax2.hlines(y=570, xmin=datetime(2023,1,26).toordinal(), xmax=datetime(2023,8,14).toordinal(), color='k')
 deployment2_oct_23 = ax2.hlines(y=570, xmin=datetime(2023,10,13).toordinal(), xmax=datetime(2024,4,12).toordinal(), color='k')
 deployment2_apr_24 = ax2.hlines(y=570, xmin=datetime(2024,4,12).toordinal(), xmax=datetime(2024,8,9).toordinal(), color='k')
-deployment2_oct_24 = ax2.hlines(y=570, xmin=datetime(2024,10,21).toordinal(), xmax=salt_Xgrid.max(), color='k')
+deployment2_oct_24 = ax2.hlines(y=570, xmin=datetime(2024,10,21).toordinal(), xmax=datetime(2024,12,4).toordinal(), color='k')
+deployment2_mar_25 = ax2.hlines(y=570, xmin=datetime(2024,3,21).toordinal(), xmax=salt_Xgrid.max(), color='k')
 ax2.clabel(lines2, lines2.levels, inline=True, fontsize=10)
 ax2.invert_yaxis()
 ax2.set_ylabel('Depth (m)')
@@ -1555,9 +1571,9 @@ ax2.text(datetime(2022,10,20).toordinal(), 530, 'Salinity Anomaly', fontsize='la
 ax2.set_xlabel('Year')
 ax2.set_yticks((0, 200, 400, 600))
 ax2.set_xticks((datetime(2015,1,1).toordinal(), datetime(2016,1,1).toordinal(), datetime(2017,1,1).toordinal(), datetime(2018,1,1).toordinal(), datetime(2019,1,1).toordinal(), datetime(2020,1,1).toordinal(), datetime(2021,1,1).toordinal(),
-               datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal()))
-ax2.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'))
-ax2.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,1,1).toordinal())
+               datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal(), datetime(2025,1,1).toordinal()))
+ax2.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'))
+ax2.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,5,1).toordinal())
 ax2.set_ylim(600, 0)
 ax2.spines[:].set_linewidth(2)
 ax2.tick_params(width=2, top=True, right=True, direction='in')
@@ -1590,16 +1606,17 @@ deployment1_jul_22 = ax3.hlines(y=570, xmin=datetime(2022,7,29).toordinal(), xma
 deployment1_jan_23 = ax3.hlines(y=570, xmin=datetime(2023,1,26).toordinal(), xmax=datetime(2023,8,14).toordinal(), color='k')
 deployment1_oct_23 = ax3.hlines(y=570, xmin=datetime(2023,10,13).toordinal(), xmax=datetime(2024,4,12).toordinal(), color='k')
 deployment1_apr_24 = ax3.hlines(y=570, xmin=datetime(2024,4,12).toordinal(), xmax=datetime(2024,8,9).toordinal(), color='k')
-deployment1_oct_24 = ax3.hlines(y=570, xmin=datetime(2024,10,21).toordinal(), xmax=temp_Xgrid.max(), color='k')
+deployment1_oct_24 = ax3.hlines(y=570, xmin=datetime(2024,10,21).toordinal(), xmax=datetime(2024,12,4).toordinal(), color='k')
+deployment1_mar_25 = ax3.hlines(y=570, xmin=datetime(2024,3,21).toordinal(), xmax=temp_Xgrid.max(), color='k')
 ax3.clabel(lines3, lines3.levels, inline=True, fontsize=10)
 ax3.invert_yaxis()
 ax3.set_ylabel('Depth (m)')
 ax3.text(datetime(2022,7,15).toordinal(), 530, 'Temperature Anomaly', fontsize='large')
 ax3.set_yticks((0, 200, 400, 600))
 ax3.set_xticks((datetime(2015,1,1).toordinal(), datetime(2016,1,1).toordinal(), datetime(2017,1,1).toordinal(), datetime(2018,1,1).toordinal(), datetime(2019,1,1).toordinal(), datetime(2020,1,1).toordinal(), datetime(2021,1,1).toordinal(),
-               datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal()))
-ax3.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'))
-ax3.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,1,1).toordinal())
+               datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal(), datetime(2025,1,1).toordinal()))
+ax3.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'))
+ax3.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,5,1).toordinal())
 ax3.set_ylim(600, 0)
 ax3.spines[:].set_linewidth(2)
 ax3.tick_params(width=2, top=True, right=True, direction='in')
@@ -1626,7 +1643,8 @@ deployment2_jul_22 = ax4.hlines(y=570, xmin=datetime(2022,7,29).toordinal(), xma
 deployment2_jan_23 = ax4.hlines(y=570, xmin=datetime(2023,1,26).toordinal(), xmax=datetime(2023,8,14).toordinal(), color='k')
 deployment2_oct_23 = ax4.hlines(y=570, xmin=datetime(2023,10,13).toordinal(), xmax=datetime(2024,4,12).toordinal(), color='k')
 deployment2_apr_24 = ax4.hlines(y=570, xmin=datetime(2024,4,12).toordinal(), xmax=datetime(2024,8,9).toordinal(), color='k')
-deployment2_oct_24 = ax4.hlines(y=570, xmin=datetime(2024,10,21).toordinal(), xmax=salt_Xgrid.max(), color='k')
+deployment2_oct_24 = ax4.hlines(y=570, xmin=datetime(2024,10,21).toordinal(), xmax=datetime(2024,12,4).toordinal(), color='k')
+deployment2_mar_25 = ax4.hlines(y=570, xmin=datetime(2024,3,21).toordinal(), xmax=salt_Xgrid.max(), color='k')
 ax4.clabel(lines4, lines4.levels, inline=True, fontsize=10)
 ax4.invert_yaxis()
 ax4.set_ylabel('Depth (m)')
@@ -1634,9 +1652,9 @@ ax4.text(datetime(2022,10,20).toordinal(), 530, 'Salinity Anomaly', fontsize='la
 ax4.set_xlabel('Year')
 ax4.set_yticks((0, 200, 400, 600))
 ax4.set_xticks((datetime(2015,1,1).toordinal(), datetime(2016,1,1).toordinal(), datetime(2017,1,1).toordinal(), datetime(2018,1,1).toordinal(), datetime(2019,1,1).toordinal(), datetime(2020,1,1).toordinal(), datetime(2021,1,1).toordinal(),
-               datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal()))
-ax4.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'))
-ax4.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,1,1).toordinal())
+               datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal(), datetime(2025,1,1).toordinal()))
+ax4.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'))
+ax4.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,5,1).toordinal())
 ax4.set_ylim(600, 0)
 ax4.spines[:].set_linewidth(2)
 ax4.tick_params(width=2, top=True, right=True, direction='in')
@@ -1644,7 +1662,7 @@ cbar2 = plt.colorbar(plot4, shrink=0.5, location='right', pad=0.015)
 cbar2.outline.set_linewidth(2)
 cbar2.set_label(label=r'(PSU)', rotation=0, labelpad=10)
 plt.tight_layout()
-plt.savefig(r'C:\Users\marqjace\seaglider_python\Figures\current_t_anom_timeseries.png')
+plt.savefig(r'C:\Users\marqjace\OneDrive - Oregon State University\Desktop\Python\TH-Line_timeseries\figures\current_t_anom_timeseries.png')
 
 
 # Plot the figure: Grid
@@ -1666,16 +1684,17 @@ deployment1_jul_22 = ax5.hlines(y=570, xmin=datetime(2022,7,29).toordinal(), xma
 deployment1_jan_23 = ax5.hlines(y=570, xmin=datetime(2023,1,26).toordinal(), xmax=datetime(2023,8,14).toordinal(), color='k')
 deployment1_oct_23 = ax5.hlines(y=570, xmin=datetime(2023,10,13).toordinal(), xmax=datetime(2024,4,12).toordinal(), color='k')
 deployment1_apr_24 = ax5.hlines(y=570, xmin=datetime(2024,4,12).toordinal(), xmax=datetime(2024,8,9).toordinal(), color='k')
-deployment1_oct_24 = ax5.hlines(y=570, xmin=datetime(2024,10,21).toordinal(), xmax=temp_Xgrid.max(), color='k')
+deployment1_oct_24 = ax5.hlines(y=570, xmin=datetime(2024,10,21).toordinal(), xmax=datetime(2024,12,4).toordinal(), color='k')
+deployment1_mar_25 = ax5.hlines(y=570, xmin=datetime(2024,3,21).toordinal(), xmax=temp_Xgrid.max(), color='k')
 # ax5.clabel(lines1, lines1.levels, inline=True, fontsize=10)
 ax5.invert_yaxis()
 ax5.set_ylabel('Depth (m)')
 ax5.text(datetime(2022,8,1).toordinal(), 530, 'Temperature Anomaly', fontsize='large')
 ax5.set_yticks((0, 200, 400, 600))
 ax5.set_xticks((datetime(2015,1,1).toordinal(), datetime(2016,1,1).toordinal(), datetime(2017,1,1).toordinal(), datetime(2018,1,1).toordinal(), datetime(2019,1,1).toordinal(), datetime(2020,1,1).toordinal(), datetime(2021,1,1).toordinal(),
-               datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal()))
-ax5.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'))
-ax5.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,1,1).toordinal())
+               datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal(), datetime(2025,1,1).toordinal()))
+ax5.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'))
+ax5.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,5,1).toordinal())
 ax5.set_ylim(600, 0)
 ax5.spines[:].set_linewidth(2)
 ax5.tick_params(width=2, top=True, right=True, direction='in')
@@ -1700,7 +1719,8 @@ deployment2_jul_22 = ax6.hlines(y=570, xmin=datetime(2022,7,29).toordinal(), xma
 deployment2_jan_23 = ax6.hlines(y=570, xmin=datetime(2023,1,26).toordinal(), xmax=datetime(2023,8,14).toordinal(), color='k')
 deployment2_oct_23 = ax6.hlines(y=570, xmin=datetime(2023,10,13).toordinal(), xmax=datetime(2024,4,12).toordinal(), color='k')
 deployment2_apr_24 = ax6.hlines(y=570, xmin=datetime(2024,4,12).toordinal(), xmax=datetime(2024,8,9).toordinal(), color='k')
-deployment2_oct_24 = ax6.hlines(y=570, xmin=datetime(2024,10,21).toordinal(), xmax=salt_Xgrid.max(), color='k')
+deployment2_oct_24 = ax6.hlines(y=570, xmin=datetime(2024,10,21).toordinal(), xmax=datetime(2024,12,4).toordinal(), color='k')
+deployment2_mar_25 = ax6.hlines(y=570, xmin=datetime(2024,3,21).toordinal(), xmax=salt_Xgrid.max(), color='k')
 # ax6.clabel(lines2, lines2.levels, inline=True, fontsize=10)
 ax6.invert_yaxis()
 ax6.set_ylabel('Depth (m)')
@@ -1708,9 +1728,9 @@ ax6.text(datetime(2022,11,1).toordinal(), 530, 'Salinity Anomaly', fontsize='lar
 ax6.set_xlabel('Year')
 ax6.set_yticks((0, 200, 400, 600))
 ax6.set_xticks((datetime(2015,1,1).toordinal(), datetime(2016,1,1).toordinal(), datetime(2017,1,1).toordinal(), datetime(2018,1,1).toordinal(), datetime(2019,1,1).toordinal(), datetime(2020,1,1).toordinal(), datetime(2021,1,1).toordinal(),
-               datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal()))
-ax6.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'))
-ax6.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,1,1).toordinal())
+               datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal(), datetime(2025,1,1).toordinal()))
+ax6.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'))
+ax6.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,5,1).toordinal())
 ax6.set_ylim(600, 0)
 ax6.spines[:].set_linewidth(2)
 ax6.tick_params(width=2, top=True, right=True, direction='in')
@@ -1752,7 +1772,7 @@ lns = oni_plot + scti_plot + thi_plot + moci_plot
 labs = [l.get_label() for l in lns]
 ax.legend(lns, labs, loc=2, frameon=False, fontsize='x-large', labelcolor='linecolor')
 plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,1,1).toordinal(), ymin=0, ymax=0.35, alpha=0.15, color='gray')
-plt.savefig(r'C:\Users\marqjace\seaglider_python\Figures\current_t_anom_indices_MOCI.png')
+plt.savefig(r'C:\Users\marqjace\OneDrive - Oregon State University\Desktop\Python\TH-Line_timeseries\figures\current_t_anom_indices_MOCI.png')
 
 
 # Plot the figure: Temperature Anomaly Indices
@@ -1786,7 +1806,7 @@ lns = oni_plot + scti_plot + thi_plot
 labs = [l.get_label() for l in lns]
 ax.legend(lns, labs, loc=2, frameon=False, fontsize='x-large', labelcolor='linecolor')
 plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,1,1).toordinal(), ymin=0, ymax=0.35, alpha=0.15, color='gray')
-plt.savefig(r'C:\Users\marqjace\seaglider_python\Figures\current_t_anom_indices.png')
+plt.savefig(r'C:\Users\marqjace\OneDrive - Oregon State University\Desktop\Python\TH-Line_timeseries\figures\current_t_anom_indices.png')
 
 
 # # Hovmoller Diagram
@@ -2014,20 +2034,20 @@ plt.savefig(r'C:\Users\marqjace\seaglider_python\Figures\current_t_anom_indices.
 # }
 
 
-# # combined_transects = []
+# combined_transects = []
 
-# # for transect, array in transects_longitude.items():
-# #     transects_longitude[transect] = xr.DataArray(array)   # Converts the numpy array to an xarray data array for the next step
+# for transect, array in transects_longitude.items():
+#     transects_longitude[transect] = xr.DataArray(array)   # Converts the numpy array to an xarray data array for the next step
 
-# # for (transect, array), (transect_times_full, time) in zip(transects_longitude.items(), transect_times_full.items()):
-# #     transects_longitude[transect] = array.expand_dims(time=time)   # Adds the time point from transect_times to the data array
+# for (transect, array), (transect_times_full, time) in zip(transects_longitude.items(), transect_times_full.items()):
+#     transects_longitude[transect] = array.expand_dims(time=time)   # Adds the time point from transect_times to the data array
 
-# # for transect, array in transects_longitude.items():
-# #     combined_transects.append(array)   # Appends the data array to the list: combined_temp_data
+# for transect, array in transects_longitude.items():
+#     combined_transects.append(array)   # Appends the data array to the list: combined_temp_data
 
-# # combined_transects_data = xr.concat(combined_transects, dim='time')   # Concatenates all of the data together
+# combined_transects_data = xr.concat(combined_transects, dim='time')   # Concatenates all of the data together
 
-# # combined_transects_data = xr.combine_nested(combined_transects, concat_dim='time')
+# combined_transects_data = xr.combine_nested(combined_transects, concat_dim='time')
 
 
 # # Initialize a plot
