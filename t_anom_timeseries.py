@@ -16,6 +16,8 @@ import transects_func
 # Open WOA Climatology Data
 # Data Access Here: https://www.ncei.noaa.gov/access/world-ocean-atlas-2018/bin/woa18.pl
 
+print('\nImporting WOA climatology data...')
+
 # Temperature
 ds_z_t_an1 = woa_temp.woa_temp_jan
 ds_z_t_an2 = woa_temp.woa_temp_feb
@@ -48,7 +50,9 @@ ds_z_s_an12 = woa_salt.woa_salt_dec
 # SCTI / ONI Data
 # Data Access Here: https://spraydata.ucsd.edu/products/socal-index/
 
-dat = xr.open_dataset(r'C:/Users/marqjace/TH_line/scti_oni/socal_index_monthly_v1_8571_f367_229e_U1723054143245.nc', decode_times=False)
+print('\nImporting SCTI, ONI, and MOCI data...')
+
+dat = xr.open_dataset(r'C:/Users/marqjace/TH_line/scti_oni/socal_index_monthly_v1_8571_f367_229e_U1743622012494.nc', decode_times=False)
 
 # Assign Variables
 scti = dat['scti']
@@ -67,16 +71,14 @@ scti_time = time2
 
 
 # California MOCI
-dat2 = pd.read_csv(r'C:/Users/marqjace/TH_line/california_moci/california_moci.csv')
-dat2 = dat2.drop(['FID', 'Year', 'Season', 'months', 'geometry'], axis=1)
+# García-Reyes, M. and Sydeman, W.J. (2017). California Multivariate Ocean Climate Indicator (MOCI) [Data set, V2]. Farallon Institute website, http://www.faralloninstitute.org/moci. Accessed [2 April 2025].
+dat2 = pd.read_csv(r'C:/Users/marqjace/TH_line/california_moci/CaliforniaMOCI.csv')
+dat2 = dat2.drop(['Year', 'Season', 'Central California (34.5-38N)', 'Southern California (32-34.5N)'], axis=1)
 dat2 = dat2.set_index(['time'])
 
-
 # Norcal Only
-norcal = dat2.where(dat2['location'] == 'North California (38-42N)')
-
-norcal_time = norcal.index
-norcal_moci = norcal['moci']
+norcal_moci = dat2['North California (38-42N)']
+norcal_time = norcal_moci.index
 
 norcal_time2 = []
 
@@ -219,6 +221,8 @@ Xgrid2, Ygrid2 = np.meshgrid(xgrid2, ygrid2)
 # print(dat2)
 
 # # dat2.to_netcdf('C:/Users/marqjace/TH_line/deployments/apr_2019/transect4/8_19_merged_oxy.nc')
+
+print('\nImporting TH line transect data...')
 
 # Interpolated & Gridded Temperature
 temp_12_14_a = transects_func.temp_12_14_a
@@ -674,6 +678,8 @@ lon_3_25 = transects_func.lon_3_25
 # Temperature Anomaly
 # Create Temperature Anomaly Array For Each Transect Line
 
+print('\nCalculating temperature anomalies...')
+
 # Nov 2014 Deployment
 t_anom_12_14_a = np.subtract(temp_12_14_a, ds_z_t_an12) # Transect 1 Dec 2014
 t_anom_12_14_b = np.subtract(temp_12_14_b, ds_z_t_an12) # Transect 2 Dec 2014
@@ -823,6 +829,8 @@ t_anom_3_25 = np.subtract(temp_3_25, ds_z_t_an3) # Transect 1 Mar 2025
 
 # Salinity Anomaly
 # Create Temperature Anomaly Array For Each Transect Line
+
+print('\nCalculating salinity anomalies...')
 
 # Nov 2014 Deployment
 s_anom_12_14_a = np.subtract(salt_12_14_a, ds_z_s_an12) # Transect 1 Dec 2014
@@ -1081,14 +1089,11 @@ transect_times = {
     'tran_4_24':np.array([datetime(2024,4,17).toordinal()]),
     'tran_5_24':np.array([datetime(2024,5,18).toordinal()]),  
     'tran_6_24':np.array([datetime(2024,6,11).toordinal()]),  
-    'tran_7_24':np.array([datetime(2024,7,11).toordinal()]),
-    'tran_8_24_a':np.array([datetime(2024,8,7).toordinal()]),
-    'tran_8_24_b':np.array([datetime(2024,8,19).toordinal()]),
-    'tran_10_24':np.array([datetime(2024,10,28).toordinal()]),
-    'tran_11_24':np.array([datetime(2024,11,22).toordinal()]), 
-    # 'tran_12_24':np.array([datetime(2024,12,15).toordinal()]),   # Fill values
-    # 'tran_1_25':np.array([datetime(2025,1,15).toordinal()]),   # Fill values
-    # 'tran_2_25':np.array([datetime(2025,2,15).toordinal()]),   # Fill values
+    # 'tran_7_24':np.array([datetime(2024,7,11).toordinal()]), # Bad salinity data
+    # 'tran_8_24_a':np.array([datetime(2024,8,7).toordinal()]), # Bad salinity data
+    # 'tran_8_24_b':np.array([datetime(2024,8,19).toordinal()]), # Bad salinity data
+    'tran_10_24':np.array([datetime(2024,10,28).toordinal()]), 
+    'tran_11_24':np.array([datetime(2024,11,22).toordinal()]),
     'tran_3_25':np.array([datetime(2025,3,13).toordinal()]),
     'tran_4_25':np.array([datetime(2025,4,15).toordinal()]),   # For cutoff values
     'tran_5_25':np.array([datetime(2025,5,15).toordinal()]),   # For cutoff values
@@ -1203,11 +1208,11 @@ transects_temp = {
     '4_24': t_anom_4_24,
     '5_24': t_anom_5_24,   
     '6_24': t_anom_6_24,   
-    '7_24': t_anom_7_24,
-    '8_24_a': t_anom_8_24_a,
-    '8_24_b': t_anom_8_24_b,
-    '10_24': t_anom_10_24,
-    '11_24': t_anom_11_24,
+    # '7_24': t_anom_7_24, # Bad salinity data
+    # '8_24_a': t_anom_8_24_a, # Bad salinity data
+    # '8_24_b': t_anom_8_24_b, # Bad salinity data
+    '10_24': t_anom_10_24, 
+    '11_24': t_anom_11_24, 
     '3_25': t_anom_3_25,   # Repeating for cutoff values
     '4_25': t_anom_3_25,   # Repeating for cutoff values
     '5_25': t_anom_3_25,   # Repeating for cutoff values
@@ -1215,23 +1220,27 @@ transects_temp = {
 
 combined_temp_data = []
 
+print('\nCreating a mean depth profile for each transect...')
 for transect, array in transects_temp.items():
     transects_temp[transect] = np.mean(array, axis=1)   # Creates a profile of the mean values across depth
 
 for transect, array in transects_temp.items():
     transects_temp[transect] = xr.DataArray(array)   # Converts the numpy array to an xarray DataArray for the next step
     
+print('\nAdding transect time to the temp anomaly data...')
 for (transect, array), (transect_time, time) in zip(transects_temp.items(), transect_times.items()):
     transects_temp[transect] = array.expand_dims(time=time)   # Adds the time point from transect_times to the DataArray
 
 for transect, array in transects_temp.items():
     combined_temp_data.append(array)   # Appends the DataArray to the list: combined_temp_data
 
+print('\nConcatenating new dataset "combined_temp"...')
 combined_temp = xr.concat(combined_temp_data, dim='time')   # Concatenates all of the data together
 
 
 # Replicating surface values up to 10m above surface to prevent cutoff during filtering
 
+print('\nReplicating surface values up to 10m above the surface...')
 surf_vals = combined_temp[:, 1]
 
 surf_vals2 = xr.DataArray(surf_vals)
@@ -1246,10 +1255,12 @@ combined_temp = xr.concat((surf_vals3, combined_temp), dim='depth')
 # Replace surface values with data at 5 meters depth to rid of NaN's
 combined_temp[:,2] = combined_temp[:,3]
 
+print('\nGridding the temperature data...')
 # Generate a regular grid to interpolate the data
 xgrid = np.arange(combined_temp['time'].min(), combined_temp['time'].max(), 30)
 ygrid = np.arange(-10,1000,5)
 
+print('\nInterpolating the temperature data...')
 # Interpolate the data over the new grid
 combined_temp = combined_temp.interp(time=xgrid,depth=ygrid, method='linear')
 
@@ -1271,6 +1282,7 @@ temp_lanc = temp_lanc.T.rolling(window=4, center=True, win_type='boxcar').mean()
 temp_box = temp.T.rolling(window=3, center=True, win_type='boxcar').mean()
 temp_box = temp_box.T.rolling(window=4, center=True, win_type='boxcar').mean()
 
+print('\nApplying a 3-month boxcar filter...')
 # Rolling Vertical Filter
 temp_roll = temp.rolling(window=3, center=True, win_type='boxcar').mean()
 
@@ -1411,11 +1423,11 @@ transects_salt = {
     '4_24': s_anom_4_24,
     '5_24': s_anom_5_24,   
     '6_24': s_anom_6_24,   
-    '7_24': s_anom_7_24,
-    '8_24_a': s_anom_8_24_a,
-    '8_24_b': s_anom_8_24_b,
-    '10_24': s_anom_10_24,
-    '11_24': s_anom_11_24,
+    # '7_24': s_anom_7_24, # Bad salinity data
+    # '8_24_a': s_anom_8_24_a, # Bad salinity data
+    # '8_24_b': s_anom_8_24_b, # Bad salinity data
+    '10_24': s_anom_10_24, 
+    '11_24': s_anom_11_24, 
     '3_25': s_anom_3_25,  # Repeat for cutoff values
     '4_25': s_anom_3_25,  # Repeat for cutoff values
     '5_25': s_anom_3_25,  # Repeat for cutoff values
@@ -1423,22 +1435,26 @@ transects_salt = {
 
 combined_salt_data = []
 
+print('\nCreating a mean depth profile for each transect...')
 for transect, array in transects_salt.items():
     transects_salt[transect] = np.mean(array, axis=1)
 
 for transect, array in transects_salt.items():
     transects_salt[transect] = xr.DataArray(array)
     
+print('\nAdding transect time to the salinity anomaly data...')
 for (transect, array), (transect_time, time) in zip(transects_salt.items(), transect_times.items()):
     transects_salt[transect] = array.expand_dims(time=time)
     
 for transect, array in transects_salt.items():
     combined_salt_data.append(array)
     
+print('\nConcatenating new dataset "combined_salt"...')
 combined_salt = xr.concat(combined_salt_data, dim='time')
 
 
 # Replicating surface values up to 10m above surface to prevent cutoff during filtering
+print('\nReplicating surface values up to 10m above the surface...')
 surf_vals = combined_salt[:, 1]
 
 surf_vals = xr.DataArray(surf_vals)
@@ -1453,7 +1469,7 @@ combined_salt = xr.concat((surf_vals2, combined_salt), dim='depth')
 # Replace surface values with data at 5 meters depth to rid of NaN's
 combined_salt[:,2] = combined_salt[:,3]
 
-
+print('\nGridding the salinity data...')
 # Generate a regular grid to interpolate the data
 xgrid = np.arange(combined_salt['time'].min(), combined_salt['time'].max(), 30)
 ygrid = np.arange(-10,1000, 5)
@@ -1461,6 +1477,7 @@ ygrid = np.arange(-10,1000, 5)
 # Interpolate the data over the new grid
 combined_salt = combined_salt.interp(time=xgrid,depth=ygrid)
 
+print('\nInterpolating the salinity data...')
 # Redefine the variables under the new interpolated array
 salt_Xgrid, salt_Ygrid = np.meshgrid(combined_salt['time'], combined_salt['depth'])
 
@@ -1480,6 +1497,7 @@ salt_lanc = salt_lanc.T.rolling(window=4, center=True, win_type='boxcar').mean()
 salt_box = salt.T.rolling(window=3, center=True, win_type='boxcar').mean()
 salt_box = salt_box.T.rolling(window=4, center=True, win_type='boxcar').mean()
 
+print('\nApplying a 3-month boxcar filter...')
 # Rolling Vertical Filter
 salt_roll = salt.rolling(window=3, center=True, win_type='boxcar').mean()
 
@@ -1496,6 +1514,8 @@ boundaries_oxy = [0, 50, 100, 150, 200, 250, 300]
 
 divnorm_temp=colors.TwoSlopeNorm(vcenter=0., vmin=-4, vmax=4)
 divnorm_salt=colors.TwoSlopeNorm(vcenter=0., vmin=-.75, vmax=.75)
+
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S") # Timestamp for file naming
 
 
 # Contour Plots
@@ -1581,7 +1601,7 @@ divnorm_salt=colors.TwoSlopeNorm(vcenter=0., vmin=-.75, vmax=.75)
 
 # plt.tight_layout()
 
-
+print(f'\nPlotting t_anom_timeseries_{timestamp}.png...')
 # Plot the figure: Trinidad Head Averaged Over Inshore 200km (Filtered)
 fig, (ax3, ax4) = plt.subplots(2, 1, figsize=(14,8), dpi=300)
 
@@ -1659,7 +1679,7 @@ cbar2 = plt.colorbar(plot4, shrink=0.5, location='right', pad=0.015)
 cbar2.outline.set_linewidth(2)
 cbar2.set_label(label=r'(PSU)', rotation=0, labelpad=10)
 plt.tight_layout()
-plt.savefig(r'C:\Users\marqjace\OneDrive - Oregon State University\Desktop\Python\TH-Line_timeseries\figures\t_anom_timeseries31mar_2025.png')
+plt.savefig(f'C:/Users/marqjace/OneDrive - Oregon State University/Desktop/Python/TH-Line_timeseries/figures/t_anom_timeseries_{timestamp}.png')
 
 
 # # Plot the figure: Grid
@@ -1737,7 +1757,7 @@ plt.savefig(r'C:\Users\marqjace\OneDrive - Oregon State University\Desktop\Pytho
 # cbar2.set_label(label=r'(PSU)', rotation=0, labelpad=10)
 # plt.tight_layout()
 
-
+print(f'\nPlotting t_anom_indices_MOCI_{timestamp}.png...')
 # Plot the figure: Temperature Anomaly Indices
 fig, ax = plt.subplots(1,1, figsize=(18,7), dpi=300)
 
@@ -1769,9 +1789,10 @@ lns = oni_plot + scti_plot + thi_plot + moci_plot
 labs = [l.get_label() for l in lns]
 ax.legend(lns, labs, loc=2, frameon=False, fontsize='x-large', labelcolor='linecolor')
 plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,6,1).toordinal(), ymin=0, ymax=0.35, alpha=0.15, color='gray')
-plt.savefig(r'C:\Users\marqjace\OneDrive - Oregon State University\Desktop\Python\TH-Line_timeseries\figures\t_anom_indices_MOCI_31mar2025.png')
+plt.savefig(f'C:/Users/marqjace/OneDrive - Oregon State University/Desktop/Python/TH-Line_timeseries/figures/t_anom_indices_MOCI_{timestamp}.png')
 
 
+print(f'\nPlotting t_anom_indices_{timestamp}.png...')
 # Plot the figure: Temperature Anomaly Indices
 fig, ax = plt.subplots(1,1, figsize=(18,7), dpi=300)
 
@@ -1803,7 +1824,7 @@ lns = oni_plot + scti_plot + thi_plot
 labs = [l.get_label() for l in lns]
 ax.legend(lns, labs, loc=2, frameon=False, fontsize='x-large', labelcolor='linecolor')
 plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,6,1).toordinal(), ymin=0, ymax=0.35, alpha=0.15, color='gray')
-plt.savefig(r'C:\Users\marqjace\OneDrive - Oregon State University\Desktop\Python\TH-Line_timeseries\figures\t_anom_indices_31mar2025.png')
+plt.savefig(f"C:/Users/marqjace/OneDrive - Oregon State University/Desktop/Python/TH-Line_timeseries/figures/t_anom_indices_{timestamp}.png")
 
 
 # # Hovmoller Diagram
