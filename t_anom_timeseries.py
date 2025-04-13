@@ -123,108 +123,8 @@ xgrid2 = np.linspace(xmin2, xmax2, xn2)
 ygrid2 = np.linspace(ymin2, ymax2, yn2)
 Xgrid2, Ygrid2 = np.meshgrid(xgrid2, ygrid2)
 
-
-# # Template for Opening & Merging Individual Dives
-
-# # Open 
-# filenames = 'C:/Users/marqjace/TH_line/deployments/oct_2024/transect2/p266*.nc'
-
-# gt.load.seaglider_show_variables(filenames)
-
-# names = [
-#     'ctd_depth',
-#     'ctd_time',
-#     'ctd_pressure',
-#     'salinity',
-#     'temperature',
-#     # 'aanderaa4831_dissolved_oxygen',
-#     # 'aanderaa4330_dissolved_oxygen',
-#     # 'sbe43_dissolved_oxygen'
-# ]
-
-# ds_dict = gt.load.seaglider_basestation_netCDFs(
-#     filenames, names,
-#     return_merged=True,
-#     keep_global_attrs=False
-# )
-
-# print(ds_dict.keys())
-
-# ctd_data_point = ds_dict['ctd_data_point']
-
-# dat = ctd_data_point.rename({
-#     'salinity': 'salt_raw',
-#     'temperature': 'temp_raw',
-#     'ctd_pressure': 'pressure',
-#     'ctd_depth': 'depth',
-#     'ctd_time': 'time_raw',
-#     # 'aanderaa4831_dissolved_oxygen': 'oxygen',
-#     # 'aanderaa4330_dissolved_oxygen': 'oxygen',
-#     # 'sbe43_dissolved_oxygen': 'oxygen'
-# })
-
-# print(dat)
-
-# dat.to_netcdf('C:/Users/marqjace/TH_line/deployments/oct_2024/transect2/11_24_merged.nc')
-
-
-
-##################### Below is incorrect #####################
-
-
-
-# names = [
-#     'ctd_depth',
-#     'ctd_time',
-#     'ctd_pressure',
-#     'salinity',
-#     'temperature'
-# ]
-
-# names2 = [
-#     'aanderaa4831_dissolved_oxygen'
-# ]
-
-# ds_dict = gt.load.seaglider_basestation_netCDFs(
-#     filenames, names,
-#     return_merged=True,
-#     keep_global_attrs=False
-# )
-
-# print(ds_dict.keys())
-
-# ds_dict2 = gt.load.seaglider_basestation_netCDFs(
-#     filenames, names2,
-#     return_merged=True,
-#     keep_global_attrs=False
-# )
-
-# print(ds_dict2.keys())
-
-# ctd_data_point = ds_dict['ctd_data_point']
-
-# ctd_data_point, aa4831_data_point = ds_dict['ctd_data_point'], ds_dict2['aa4831_data_point']
-
-# dat = ctd_data_point.rename({
-#     'salinity': 'salt_raw',
-#     'temperature': 'temp_raw',
-#     'ctd_pressure': 'pressure',
-#     'ctd_depth': 'depth',
-#     'ctd_time': 'time_raw'
-# })
-
-# dat2 = aa4831_data_point.rename({
-#     'aanderaa4831_dissolved_oxygen': 'oxygen',
-# })
-
-# print(dat)
-# print(dat2)
-
-# # dat2.to_netcdf('C:/Users/marqjace/TH_line/deployments/apr_2019/transect4/8_19_merged_oxy.nc')
-
-print('\nImporting TH line transect data...')
-
 # Interpolated & Gridded Temperature
+print('\nImporting TH line transect data...')
 temp_12_14_a = transects_func.temp_12_14_a
 temp_12_14_b = transects_func.temp_12_14_b
 temp_1_15 = transects_func.temp_1_15
@@ -828,7 +728,7 @@ t_anom_3_25 = np.subtract(temp_3_25, ds_z_t_an3) # Transect 1 Mar 2025
 
 
 # Salinity Anomaly
-# Create Temperature Anomaly Array For Each Transect Line
+# Create Salinity Anomaly Array For Each Transect Line
 
 print('\nCalculating salinity anomalies...')
 
@@ -1239,7 +1139,6 @@ combined_temp = xr.concat(combined_temp_data, dim='time')   # Concatenates all o
 
 
 # Replicating surface values up to 10m above surface to prevent cutoff during filtering
-
 print('\nReplicating surface values up to 10m above the surface...')
 surf_vals = combined_temp[:, 1]
 
@@ -1255,63 +1154,29 @@ combined_temp = xr.concat((surf_vals3, combined_temp), dim='depth')
 # Replace surface values with data at 5 meters depth to rid of NaN's
 combined_temp[:,2] = combined_temp[:,3]
 
-print('\nGridding the temperature data...')
-# Generate a regular grid to interpolate the data
-xgrid = np.arange(combined_temp['time'].min(), combined_temp['time'].max(), 30)
-ygrid = np.arange(-10,1000,5)
+print('\nGridding the temperature data...') # Generate a regular grid to interpolate the data
+xgrid = np.arange(combined_temp['time'].min(), combined_temp['time'].max(), 30) # Every 30 days in time
+ygrid = np.arange(-10,1000,5) # Every 5m in depth
 
 print('\nInterpolating the temperature data...')
-# Interpolate the data over the new grid
-combined_temp = combined_temp.interp(time=xgrid,depth=ygrid, method='linear')
+combined_temp = combined_temp.interp(time=xgrid,depth=ygrid, method='linear') # Interpolate the data over the new grid
+temp_Xgrid, temp_Ygrid = np.meshgrid(combined_temp['time'], combined_temp['depth']) # Use meshgrid to create a regular grid of time and depth
 
-# # Redefine the variables under the new interpolated array
-temp_Xgrid, temp_Ygrid = np.meshgrid(combined_temp['time'], combined_temp['depth'])
-
-temp = combined_temp.values.T
-temp = pd.DataFrame(temp)
-
-# Cosine Filter (3-month, 30 meter)
-temp_cos = temp.T.rolling(window=3, center=True, win_type='cosine').mean()
-temp_cos = temp_cos.T.rolling(window=4, center=True, win_type='cosine').mean()
-
-# Horiz Lanczos, Vert Boxcar Filter (6-month, 30 meter)
-temp_lanc = temp.T.rolling(window=6, center=True, win_type='lanczos').mean()
-temp_lanc = temp_lanc.T.rolling(window=4, center=True, win_type='boxcar').mean()
-
-# Boxcar Filter (3-month, 20 meter)
-temp_box = temp.T.rolling(window=3, center=True, win_type='boxcar').mean()
-temp_box = temp_box.T.rolling(window=4, center=True, win_type='boxcar').mean()
+temp = combined_temp.values.T # Transpose the temperature data
+temp = pd.DataFrame(temp) # Make it a pandas dataframe
 
 print('\nApplying a 3-month boxcar filter...')
-# Rolling Vertical Filter
-temp_roll = temp.rolling(window=3, center=True, win_type='boxcar').mean()
+temp_box = temp.T.rolling(window=3, center=True, win_type='boxcar').mean() # Boxcar Filter every 3 transects (90 days)
+temp_box = temp_box.T.rolling(window=4, center=True, win_type='boxcar').mean() # Boxcar Filter every 4 x 5m (20m)
 
+# temp_roll = temp.rolling(window=3, center=True, win_type='boxcar').mean() # Rolling boxcar filter every 3 transects (90 days)
 
-# Extract fifty-meters values
-fifty_meters = temp_box.T[12]
-zero_meters = temp_box.T[2]
+fifty_meters = temp_box.T[12] # Extract fifty-meters values
+zero_meters = temp_box.T[2] # Extract surface values
 
-fifty_meters = xr.DataArray(fifty_meters)
-zero_meters = xr.DataArray(zero_meters)
-thi_time = combined_temp['time']
-
-# print(zero_meters)
-
-
-# xn3, yn3 = 91, 150
-
-#  # grid window
-# xmin3, xmax3 = -129.625, -124.375
-# ymin3, ymax3 = datetime(2015,1,1), datetime(2025,1,1)
-
-# # Generate a regular grid to interpolate the data
-# xgrid3 = np.linspace(xmin3, xmax3, xn3)
-# ygrid3 = np.linspace(ymin3, ymax3, yn3)
-# Xgrid3, Ygrid3 = np.meshgrid(xgrid3, ygrid3)
-
-# zero_meters = zero_meters.interp(longitude=xgrid3,time=ygrid3, method='linear')
-# temp_hovmoller = zero_meters.values.T
-# temp_hovmoller = pd.DataFrame(temp_hovmoller)
+fifty_meters = xr.DataArray(fifty_meters) # Save to xarray data array
+zero_meters = xr.DataArray(zero_meters) # Save to xarray data array
+thi_time = combined_temp['time'] # Save the Trinidad Head Index time as "thi_time"
 
 
 # Salinity
@@ -1452,7 +1317,6 @@ for transect, array in transects_salt.items():
 print('\nConcatenating new dataset "combined_salt"...')
 combined_salt = xr.concat(combined_salt_data, dim='time')
 
-
 # Replicating surface values up to 10m above surface to prevent cutoff during filtering
 print('\nReplicating surface values up to 10m above the surface...')
 surf_vals = combined_salt[:, 1]
@@ -1469,37 +1333,22 @@ combined_salt = xr.concat((surf_vals2, combined_salt), dim='depth')
 # Replace surface values with data at 5 meters depth to rid of NaN's
 combined_salt[:,2] = combined_salt[:,3]
 
-print('\nGridding the salinity data...')
-# Generate a regular grid to interpolate the data
-xgrid = np.arange(combined_salt['time'].min(), combined_salt['time'].max(), 30)
-ygrid = np.arange(-10,1000, 5)
-
-# Interpolate the data over the new grid
-combined_salt = combined_salt.interp(time=xgrid,depth=ygrid)
+print('\nGridding the salinity data...') # Generate a regular grid to interpolate the data
+xgrid = np.arange(combined_salt['time'].min(), combined_salt['time'].max(), 30) # Every 30 days in time
+ygrid = np.arange(-10,1000, 5) # Every 5m depth
 
 print('\nInterpolating the salinity data...')
-# Redefine the variables under the new interpolated array
-salt_Xgrid, salt_Ygrid = np.meshgrid(combined_salt['time'], combined_salt['depth'])
+combined_salt = combined_salt.interp(time=xgrid,depth=ygrid) # Interpolate the data over the new grid
+salt_Xgrid, salt_Ygrid = np.meshgrid(combined_salt['time'], combined_salt['depth']) # Meshgrid the time and depth
 
-# temp = combined_data_new['t_an'].T
-salt = combined_salt.values.T
-salt = pd.DataFrame(salt)
-
-# Cosine Filter (3-month, 30 meter)
-salt_cos = salt.T.rolling(window=3, center=True, win_type='cosine').mean()
-salt_cos = salt_cos.T.rolling(window=4, center=True, win_type='cosine').mean()
-
-# Horiz Lanczos, Vert Boxcar Filter (6-month, 30 meter)
-salt_lanc = salt.T.rolling(window=6, center=True, win_type='lanczos').mean()
-salt_lanc = salt_lanc.T.rolling(window=4, center=True, win_type='boxcar').mean()
-
-# Boxcar Filter (3-month, 20 meter)
-salt_box = salt.T.rolling(window=3, center=True, win_type='boxcar').mean()
-salt_box = salt_box.T.rolling(window=4, center=True, win_type='boxcar').mean()
+salt = combined_salt.values.T # Transpose the salinity data
+salt = pd.DataFrame(salt) # Make it a pandas dataframe
 
 print('\nApplying a 3-month boxcar filter...')
-# Rolling Vertical Filter
-salt_roll = salt.rolling(window=3, center=True, win_type='boxcar').mean()
+salt_box = salt.T.rolling(window=3, center=True, win_type='boxcar').mean() # Boxcar Filter every 3 transects (90 days)
+salt_box = salt_box.T.rolling(window=4, center=True, win_type='boxcar').mean() # Boxcar Filter every 4 x 5m (20m)
+
+# salt_roll = salt.rolling(window=3, center=True, win_type='boxcar').mean()
 
 
 # Plots
@@ -1520,89 +1369,8 @@ timestamp = datetime.now().strftime("%Y%m%d_%H%M%S") # Timestamp for file naming
 
 # Contour Plots
 
-# # Plot the figure: Trinidad Head Averaged Over Inshore 200km (RAW)
-# fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14,8), dpi=300)
-
-# plot1 = ax1.contourf(temp_Xgrid, temp_Ygrid, temp, cmap='RdYlBu_r', norm=divnorm_temp, levels=boundaries_temp)
-# lines1 = ax1.contour(temp_Xgrid, temp_Ygrid, temp, colors='black', norm=divnorm_temp, levels=levels_temp, alpha=0.75)
-# deployment1_nov_14 = ax1.hlines(y=570, xmin=datetime(2014,12,4).toordinal(), xmax=datetime(2015,3,9).toordinal(), color='k')
-# deployment1_mar_15 = ax1.hlines(y=570, xmin=datetime(2015,3,9).toordinal(), xmax=datetime(2015,9,17).toordinal(), color='k')
-# deployment1_sep_15 = ax1.hlines(y=570, xmin=datetime(2015,9,17).toordinal(), xmax=datetime(2016,5,16).toordinal(), color='k')
-# deployment1_may_16 = ax1.hlines(y=570, xmin=datetime(2016,5,23).toordinal(), xmax=datetime(2016,10,21).toordinal(), color='k')
-# deployment1_oct_16 = ax1.hlines(y=570, xmin=datetime(2016,10,21).toordinal(), xmax=datetime(2017,6,5).toordinal(), color='k')
-# deployment1_jun_17 = ax1.hlines(y=570, xmin=datetime(2017,6,5).toordinal(), xmax=datetime(2017,11,6).toordinal(), color='k')
-# deployment1_apr_18 = ax1.hlines(y=570, xmin=datetime(2018,4,17).toordinal(), xmax=datetime(2018,10,2).toordinal(), color='k')
-# deployment1_nov_18 = ax1.hlines(y=570, xmin=datetime(2018,11,7).toordinal(), xmax=datetime(2019,4,9).toordinal(), color='k')
-# deployment1_apr_19 = ax1.hlines(y=570, xmin=datetime(2019,4,9).toordinal(), xmax=datetime(2019,8,19).toordinal(), color='k')
-# deployment1_sep_19 = ax1.hlines(y=570, xmin=datetime(2019,9,16).toordinal(), xmax=datetime(2020,3,19).toordinal(), color='k')
-# deployment1_sep_20 = ax1.hlines(y=570, xmin=datetime(2020,9,16).toordinal(), xmax=datetime(2021,2,6).toordinal(), color='k')
-# deployment1_nov_21 = ax1.hlines(y=570, xmin=datetime(2021,11,12).toordinal(), xmax=datetime(2022,6,16).toordinal(), color='k')
-# deployment1_jul_22 = ax1.hlines(y=570, xmin=datetime(2022,7,29).toordinal(), xmax=datetime(2023,1,26).toordinal(), color='k')
-# deployment1_jan_23 = ax1.hlines(y=570, xmin=datetime(2023,1,26).toordinal(), xmax=datetime(2023,8,14).toordinal(), color='k')
-# deployment1_oct_23 = ax1.hlines(y=570, xmin=datetime(2023,10,13).toordinal(), xmax=datetime(2024,4,12).toordinal(), color='k')
-# deployment1_apr_24 = ax1.hlines(y=570, xmin=datetime(2024,4,12).toordinal(), xmax=datetime(2024,8,9).toordinal(), color='k')
-# deployment1_oct_24 = ax1.hlines(y=570, xmin=datetime(2024,10,21).toordinal(), xmax=datetime(2024,12,4).toordinal(), color='k')
-# deployment1_mar_25 = ax1.hlines(y=570, xmin=datetime(2025,3,21).toordinal(), xmax=temp_Xgrid.max(), color='k')
-
-# ax1.clabel(lines1, lines1.levels, inline=True, fontsize=10)
-# ax1.invert_yaxis()
-# ax1.set_ylabel('Depth (m)')
-# ax1.text(datetime(2022,7,15).toordinal(), 530, 'Temperature Anomaly', fontsize='large')
-# ax1.set_yticks((0, 200, 400, 600))
-# ax1.set_xticks((datetime(2015,1,1).toordinal(), datetime(2016,1,1).toordinal(), datetime(2017,1,1).toordinal(), datetime(2018,1,1).toordinal(), datetime(2019,1,1).toordinal(), datetime(2020,1,1).toordinal(), datetime(2021,1,1).toordinal(),
-#                datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal(), datetime(2025,1,1).toordinal()))
-# ax1.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'))
-# ax1.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,5,1).toordinal())
-# ax1.set_ylim(600, 0)
-# ax1.spines[:].set_linewidth(2)
-# ax1.tick_params(width=2, top=True, right=True, direction='in')
-# ax1.set_title('Trinidad Head Averaged Over Inshore 200km (RAW)', pad=10)
-# cbar1 = plt.colorbar(plot1, shrink=0.5, location='right', pad=0.015)
-# cbar1.outline.set_linewidth(2)
-# cbar1.set_label(label=r'($\degree$C)', rotation=0, labelpad=10)
-
-# plot2 = ax2.contourf(salt_Xgrid, salt_Ygrid, salt, cmap='BrBG_r', norm=divnorm_salt, levels=boundaries_salt)
-# lines2 = ax2.contour(salt_Xgrid, salt_Ygrid, salt, colors='black', norm=divnorm_salt, levels=levels_salt, alpha=0.75)
-# deployment2_nov_14 = ax2.hlines(y=570, xmin=datetime(2014,12,4).toordinal(), xmax=datetime(2015,3,9).toordinal(), color='k')
-# deployment2_mar_15 = ax2.hlines(y=570, xmin=datetime(2015,3,9).toordinal(), xmax=datetime(2015,9,17).toordinal(), color='k')
-# deployment2_sep_15 = ax2.hlines(y=570, xmin=datetime(2015,9,17).toordinal(), xmax=datetime(2016,5,16).toordinal(), color='k')
-# deployment2_may_16 = ax2.hlines(y=570, xmin=datetime(2016,5,23).toordinal(), xmax=datetime(2016,10,21).toordinal(), color='k')
-# deployment2_oct_16 = ax2.hlines(y=570, xmin=datetime(2016,10,21).toordinal(), xmax=datetime(2017,6,5).toordinal(), color='k')
-# deployment2_jun_17 = ax2.hlines(y=570, xmin=datetime(2017,6,5).toordinal(), xmax=datetime(2017,11,6).toordinal(), color='k')
-# deployment2_apr_18 = ax2.hlines(y=570, xmin=datetime(2018,4,17).toordinal(), xmax=datetime(2018,10,2).toordinal(), color='k')
-# deployment2_nov_18 = ax2.hlines(y=570, xmin=datetime(2018,11,7).toordinal(), xmax=datetime(2019,4,9).toordinal(), color='k')
-# deployment2_apr_19 = ax2.hlines(y=570, xmin=datetime(2019,4,9).toordinal(), xmax=datetime(2019,8,19).toordinal(), color='k')
-# deployment2_sep_19 = ax2.hlines(y=570, xmin=datetime(2019,9,16).toordinal(), xmax=datetime(2020,3,19).toordinal(), color='k')
-# deployment2_sep_20 = ax2.hlines(y=570, xmin=datetime(2020,9,16).toordinal(), xmax=datetime(2021,2,6).toordinal(), color='k')
-# deployment2_nov_21 = ax2.hlines(y=570, xmin=datetime(2021,11,12).toordinal(), xmax=datetime(2022,6,16).toordinal(), color='k')
-# deployment2_jul_22 = ax2.hlines(y=570, xmin=datetime(2022,7,29).toordinal(), xmax=datetime(2023,1,26).toordinal(), color='k')
-# deployment2_jan_23 = ax2.hlines(y=570, xmin=datetime(2023,1,26).toordinal(), xmax=datetime(2023,8,14).toordinal(), color='k')
-# deployment2_oct_23 = ax2.hlines(y=570, xmin=datetime(2023,10,13).toordinal(), xmax=datetime(2024,4,12).toordinal(), color='k')
-# deployment2_apr_24 = ax2.hlines(y=570, xmin=datetime(2024,4,12).toordinal(), xmax=datetime(2024,8,9).toordinal(), color='k')
-# deployment2_oct_24 = ax2.hlines(y=570, xmin=datetime(2024,10,21).toordinal(), xmax=datetime(2024,12,4).toordinal(), color='k')
-# deployment2_mar_25 = ax2.hlines(y=570, xmin=datetime(2025,3,21).toordinal(), xmax=salt_Xgrid.max(), color='k')
-# ax2.clabel(lines2, lines2.levels, inline=True, fontsize=10)
-# ax2.invert_yaxis()
-# ax2.set_ylabel('Depth (m)')
-# ax2.text(datetime(2022,10,20).toordinal(), 530, 'Salinity Anomaly', fontsize='large')
-# ax2.set_xlabel('Year')
-# ax2.set_yticks((0, 200, 400, 600))
-# ax2.set_xticks((datetime(2015,1,1).toordinal(), datetime(2016,1,1).toordinal(), datetime(2017,1,1).toordinal(), datetime(2018,1,1).toordinal(), datetime(2019,1,1).toordinal(), datetime(2020,1,1).toordinal(), datetime(2021,1,1).toordinal(),
-#                datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal(), datetime(2025,1,1).toordinal()))
-# ax2.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'))
-# ax2.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,5,1).toordinal())
-# ax2.set_ylim(600, 0)
-# ax2.spines[:].set_linewidth(2)
-# ax2.tick_params(width=2, top=True, right=True, direction='in')
-# # ax2.set_title('Salinity Anomaly', pad=10)
-# cbar2 = plt.colorbar(plot2, shrink=0.5, location='right', pad=0.015)
-# cbar2.outline.set_linewidth(2)
-# cbar2.set_label(label=r'(PSU)', rotation=0, labelpad=10)
-
-# plt.tight_layout()
-
-print(f'\nPlotting t_anom_timeseries_{timestamp}.png...')
 # Plot the figure: Trinidad Head Averaged Over Inshore 200km (Filtered)
+print(f'\nPlotting t_anom_timeseries_{timestamp}.png...')
 fig, (ax3, ax4) = plt.subplots(2, 1, figsize=(14,8), dpi=300)
 
 plot3 = ax3.contourf(temp_Xgrid, temp_Ygrid, temp_box, cmap='RdYlBu_r', norm=divnorm_temp, levels=boundaries_temp)
@@ -1757,8 +1525,8 @@ plt.savefig(f'C:/Users/marqjace/OneDrive - Oregon State University/Desktop/Pytho
 # cbar2.set_label(label=r'(PSU)', rotation=0, labelpad=10)
 # plt.tight_layout()
 
-print(f'\nPlotting t_anom_indices_MOCI_{timestamp}.png...')
 # Plot the figure: Temperature Anomaly Indices
+print(f'\nPlotting t_anom_indices_MOCI_{timestamp}.png...')
 fig, ax = plt.subplots(1,1, figsize=(18,7), dpi=300)
 
 ax2 = ax.twinx()
@@ -1792,8 +1560,8 @@ plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,6,1).toordinal(), ymin
 plt.savefig(f'C:/Users/marqjace/OneDrive - Oregon State University/Desktop/Python/TH-Line_timeseries/figures/t_anom_indices_MOCI_{timestamp}.png')
 
 
-print(f'\nPlotting t_anom_indices_{timestamp}.png...')
 # Plot the figure: Temperature Anomaly Indices
+print(f'\nPlotting t_anom_indices_{timestamp}.png...')
 fig, ax = plt.subplots(1,1, figsize=(18,7), dpi=300)
 
 ax2 = ax.twinx()
@@ -1825,361 +1593,3 @@ labs = [l.get_label() for l in lns]
 ax.legend(lns, labs, loc=2, frameon=False, fontsize='x-large', labelcolor='linecolor')
 plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,6,1).toordinal(), ymin=0, ymax=0.35, alpha=0.15, color='gray')
 plt.savefig(f"C:/Users/marqjace/OneDrive - Oregon State University/Desktop/Python/TH-Line_timeseries/figures/t_anom_indices_{timestamp}.png")
-
-
-# # Hovmoller Diagram
-
-# transect_times_full = {
-#     'tran_12_14_a':np.array(time_12_14_a),
-#     'tran_12_14_b':np.array(time_12_14_b),
-#     'tran_1_15':np.array(time_1_15),
-#     'tran_2_15_a':np.array(time_2_15_a),
-#     'tran_2_15_b':np.array(time_2_15_b),
-#     'tran_3_15':np.array(time_3_15),
-#     'tran_4_15':np.array(time_4_15),
-#     'tran_5_15':np.array(time_5_15),
-#     'tran_6_15':np.array(time_6_15),
-#     'tran_7_15':np.array(time_7_15),
-#     'tran_8_15':np.array(time_8_15),
-#     'tran_9_15':np.array(time_9_15),
-#     'tran_10_15':np.array(time_10_15),
-#     'tran_11_15':np.array(time_11_15),
-#     'tran_12_15':np.array(time_12_15),
-#     'tran_1_16':np.array(time_1_16),
-#     'tran_3_16':np.array(time_3_16),
-#     'tran_4_16':np.array(time_4_16),
-#     'tran_5_16':np.array(time_5_16),
-#     'tran_6_16':np.array(time_6_16),
-#     'tran_7_16':np.array(time_7_16),
-#     'tran_8_16':np.array(time_8_16),
-#     'tran_9_16_a':np.array(time_9_16_a),
-#     'tran_9_16_b':np.array(time_9_16_b),
-#     'tran_10_16_a':np.array(time_10_16_a),
-#     'tran_10_16_b':np.array(time_10_16_b),
-#     'tran_11_16':np.array(time_11_16),
-#     'tran_12_16':np.array(time_12_16),
-#     'tran_1_17':np.array(time_1_17),
-#     'tran_2_17':np.array(time_2_17),
-#     'tran_3_17':np.array(time_3_17),
-#     'tran_4_17_a':np.array(time_4_17_a),
-#     'tran_4_17_b':np.array(time_4_17_b),
-#     'tran_5_17':np.array(time_5_17),
-#     'tran_6_17':np.array(time_6_17),
-#     'tran_7_17':np.array(time_7_17),
-#     'tran_8_17':np.array(time_8_17),
-#     'tran_9_17':np.array(time_9_17),
-#     'tran_10_17_a':np.array(time_10_17_a),
-#     'tran_10_17_b':np.array(time_10_17_b),
-#     'tran_11_17':np.array(time_11_17),   
-#     'tran_4_18':np.array(time_4_18),
-#     'tran_5_18':np.array(time_5_18),
-#     'tran_6_18':np.array(time_6_18),
-#     'tran_8_18':np.array(time_8_18),
-#     'tran_9_18_a':np.array(time_9_18_a),
-#     'tran_9_18_b':np.array(time_9_18_b),
-#     'tran_11_18':np.array(time_11_18),
-#     'tran_12_18':np.array(time_12_18),
-#     'tran_1_19':np.array(time_1_19),
-#     'tran_2_19':np.array(time_2_19),
-#     'tran_3_19_a':np.array(time_3_19_a),
-#     'tran_3_19_b':np.array(time_3_19_b),
-#     'tran_4_19_a':np.array(time_4_19_a),
-#     'tran_4_19_b':np.array(time_4_19_b),
-#     'tran_6_19':np.array(time_6_19),
-#     'tran_7_19':np.array(time_7_19),
-#     'tran_8_19':np.array(time_8_19),    
-#     'tran_9_19':np.array(time_9_19),
-#     'tran_10_19':np.array(time_10_19),
-#     'tran_11_19':np.array(time_11_19),
-#     'tran_12_19':np.array(time_12_19),
-#     'tran_1_20':np.array(time_1_20),
-#     'tran_2_20':np.array(time_2_20),
-#     'tran_3_20_a':np.array(time_3_20_a),
-#     'tran_3_20_b':np.array(time_3_20_b),
-#     'tran_9_20':np.array(time_9_20),
-#     'tran_10_20':np.array(time_10_20),
-#     'tran_11_20':np.array(time_11_20),
-#     'tran_12_20':np.array(time_12_20),
-#     'tran_1_21':np.array(time_1_21),
-#     'tran_2_21':np.array(time_2_21),
-#     'tran_11_21':np.array(time_11_21),
-#     'tran_12_21':np.array(time_12_21),
-#     'tran_1_22':np.array(time_1_22),
-#     'tran_2_22':np.array(time_2_22),
-#     'tran_3_22':np.array(time_3_22),
-#     'tran_4_22':np.array(time_4_22),
-#     'tran_5_22':np.array(time_5_22),
-#     'tran_6_22':np.array(time_6_22),
-#     'tran_8_22':np.array(time_8_22),
-#     'tran_9_22':np.array(time_9_22),
-#     'tran_10_22':np.array(time_10_22),
-#     'tran_11_22':np.array(time_11_22),
-#     'tran_12_22':np.array(time_12_22),
-#     'tran_1_23':np.array(time_1_23),
-#     'tran_2_23':np.array(time_2_23),
-#     'tran_3_23_a':np.array(time_3_23_a),
-#     'tran_3_23_b':np.array(time_3_23_b),
-#     'tran_4_23':np.array(time_4_23),
-#     'tran_5_23':np.array(time_5_23),
-#     'tran_6_23':np.array(time_6_23),
-#     'tran_7_23':np.array(time_7_23),
-#     'tran_8_23':np.array(time_8_23),
-#     'tran_10_23':np.array(time_10_23),
-#     'tran_11_23':np.array(time_11_23),
-#     'tran_12_23':np.array(time_12_23),
-#     'tran_1_24':np.array(time_1_24),
-#     'tran_2_24_a':np.array(time_2_24_a),
-#     'tran_2_24_b':np.array(time_2_24_b),
-#     'tran_3_24':np.array(time_3_24),
-#     'tran_4_24':np.array(time_4_24),
-#     'tran_5_24':np.array(time_5_24),  
-#     'tran_6_24':np.array(time_6_24),  
-#     'tran_7_24':np.array(time_7_24),
-#     'tran_8_24_a':np.array(time_8_24_a),
-#     'tran_8_24_b':np.array(time_8_24_b),
-#     'tran_10_24':np.array(time_10_24),
-# }
-
-# transects_longitude = {
-#     '12_14_a':lon_12_14_a,
-#     '12_14_b':lon_12_14_b,
-#     '1_15':lon_1_15,
-#     '2_15_a':lon_2_15_a,
-#     '2_15_b':lon_2_15_a,
-#     '3_15':lon_3_15,
-#     '4_15':lon_4_15,
-#     '5_15':lon_5_15,
-#     '6_15':lon_6_15,
-#     '7_15':lon_7_15,
-#     '8_15':lon_8_15,
-#     '9_15':lon_9_15,
-#     '10_15':lon_10_15,
-#     '11_15':lon_11_15,
-#     '12_15':lon_12_15,
-#     '1_16':lon_1_16,
-#     '3_16':lon_3_16,
-#     '4_16':lon_4_16,
-#     '5_16':lon_5_16,
-#     '6_16':lon_6_16,
-#     '7_16':lon_7_16,
-#     '8_16':lon_8_16,
-#     '9_16_a':lon_9_16_a,
-#     '9_16_b':lon_9_16_b,
-#     '10_16_a':lon_10_16_a,
-#     '10_16_b':lon_10_16_b,
-#     '11_16':lon_11_16,
-#     '12_16':lon_12_16,
-#     '1_17':lon_1_17,
-#     '2_17':lon_2_17,
-#     '3_17':lon_3_17,
-#     '4_17_a':lon_4_17_a,
-#     '4_17_b':lon_4_17_b,
-#     '5_17':lon_5_17,
-#     '6_17':lon_6_17,
-#     '7_17':lon_7_17,
-#     '8_17':lon_8_17,
-#     '9_17':lon_9_17,
-#     '10_17_a':lon_10_17_a,
-#     '10_17_b':lon_10_17_b,
-#     '11_17':lon_11_17,
-#     '4_18':lon_4_18,
-#     '5_18':lon_5_18,
-#     '6_18':lon_6_18,
-#     '8_18':lon_8_18,
-#     '9_18_a':lon_9_18_a,
-#     '9_18_b':lon_9_18_b,
-#     '11_18':lon_11_18,
-#     '12_18':lon_12_18,
-#     '1_19':lon_1_19,
-#     '2_19':lon_2_19,
-#     '3_19_a':lon_3_19_a,
-#     '3_19_b':lon_3_19_b,
-#     '4_19_a':lon_4_19_a,
-#     '4_19_b':lon_4_19_b,
-#     '6_19':lon_6_19,
-#     '7_19':lon_7_19,
-#     '8_19':lon_8_19,
-#     '9_19':lon_9_19, 
-#     '10_19':lon_10_19,
-#     '11_19':lon_11_19,
-#     '12_19':lon_12_19,
-#     '1_20':lon_1_20,
-#     '2_20':lon_2_20,
-#     '3_20_a':lon_3_20_a,
-#     '3_20_b':lon_3_20_b,
-#     '9_20':lon_9_20,
-#     '10_20':lon_10_20,
-#     '11_20':lon_11_20,
-#     '12_20':lon_12_20,
-#     '1_21':lon_1_21,
-#     '2_21':lon_2_21,
-#     '11_21':lon_11_21,
-#     '12_21':lon_12_21,
-#     '1_22':lon_1_22,
-#     '2_22':lon_2_22,
-#     '3_22':lon_3_22,
-#     '4_22':lon_4_22,
-#     '5_22':lon_5_22,
-#     '6_22':lon_6_22,
-#     '8_22':lon_8_22,
-#     '9_22':lon_9_22,
-#     '10_22':lon_10_22,
-#     '11_22':lon_11_22,
-#     '12_22':lon_12_22,
-#     '1_23':lon_1_23,
-#     '2_23':lon_2_23,
-#     '3_23_a':lon_3_23_a,
-#     '3_23_b':lon_3_23_b,
-#     '4_23':lon_4_23,
-#     '5_23':lon_5_23,
-#     '6_23':lon_6_23,
-#     '7_23':lon_7_23,
-#     '8_23':lon_8_23,
-#     '10_23':lon_10_23,
-#     '11_23':lon_11_23,
-#     '12_23':lon_12_23,
-#     '1_24':lon_1_24,
-#     '2_24_a':lon_2_24_a,
-#     '2_24_b':lon_2_24_b,
-#     '3_24': lon_3_24,
-#     '4_24': lon_4_24,
-#     '5_24': lon_5_24,   
-#     '6_24': lon_6_24,   
-#     '7_24': lon_7_24,
-#     '8_24_a': lon_8_24_a,
-#     '8_24_b': lon_8_24_b,
-#     '10_24': lon_10_24,
-# }
-
-
-# combined_transects = []
-
-# for transect, array in transects_longitude.items():
-#     transects_longitude[transect] = xr.DataArray(array)   # Converts the numpy array to an xarray data array for the next step
-
-# for (transect, array), (transect_times_full, time) in zip(transects_longitude.items(), transect_times_full.items()):
-#     transects_longitude[transect] = array.expand_dims(time=time)   # Adds the time point from transect_times to the data array
-
-# for transect, array in transects_longitude.items():
-#     combined_transects.append(array)   # Appends the data array to the list: combined_temp_data
-
-# combined_transects_data = xr.concat(combined_transects, dim='time')   # Concatenates all of the data together
-
-# combined_transects_data = xr.combine_nested(combined_transects, concat_dim='time')
-
-
-# # Initialize a plot
-# fig, ax = plt.subplots(1,1, figsize=(10, 6), dpi=300)
-
-# # Loop through each transect in transect_times_full
-# for transect in transect_times_full:
-#     # Extract the transect identifier from transect_times_full (removing 'tran_' and formatting it)
-#     transect_name = transect.replace("tran_", "").replace("_", "_")
-    
-#     # Check if the corresponding key exists in transects_longitude
-#     if transect_name in transects_longitude:
-#         # Extract time and longitude data
-#         time_data = transect_times_full[transect]
-#         lon_data = transects_longitude[transect_name]
-        
-#         # Ensure both arrays are not empty and have the same length
-#         if len(time_data) > 0 and len(time_data) == len(lon_data):
-#             # Plot time vs longitude
-#             ax.plot(lon_data, time_data, label=transect)
-#         else:
-#             print(f"Skipping {transect} due to data mismatch or empty arrays")
-
-# # Add labels and title
-# ax.set_xlabel('Longitude')
-# ax.set_ylabel('Time')
-# ax.set_title('Transect Longitude vs Time')
-# # ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')  # Position legend outside the plot
-# plt.tight_layout()  # Adjust the layout to fit everything
-
-# plt.savefig(r'C:\Users\marqjace\seaglider_python\Figures\hovmoller.png')
-
-
-
-# # Loop through each transect in transect_times_full
-# for transect in transect_times_full:
-#     # Extract the transect identifier from transect_times_full (removing 'tran_' and formatting it)
-#     transect_name = transect.replace("tran_", "").replace("_", "_")
-    
-#     # Check if the corresponding key exists in transects_longitude
-#     if transect_name in transects_longitude:
-#         # Extract time and longitude data
-#         time_data = transect_times_full[transect]
-#         lon_data = transects_longitude[transect_name]
-        
-#         # Ensure both arrays are not empty and have the same length
-#         if len(time_data) > 0 and len(time_data) == len(lon_data):
-#             # Plot time vs longitude
-#             ax.plot(lon_data, time_data, label=transect)
-#         else:
-#             print(f"Skipping {transect} due to data mismatch or empty arrays")
-
-# temperature_anomaly = zero_meters
-# print(temperature_anomaly)
-
-# # Flatten data for interpolation
-# lon_flat = np.tile(lon_data, len(time))  # Repeat longitude for each time
-# time_flat = np.repeat(time, len(lon_data))  # Repeat each time for all longitudes
-# t_anom_flat = temperature_anomaly  # Flatten the 2D array to 1D
-
-# # Define regular grid for interpolation
-# lon_grid = np.linspace(min(lon_data), max(lon_data), 91)  # Regular grid for longitude
-# time_grid = np.linspace(min(time), max(time), 150)  # Regular grid for time
-# lon_mesh, time_mesh = np.meshgrid(lon_grid, time_grid)
-
-# # Interpolate temperature anomaly onto the regular grid
-# t_anom_grid = griddata(
-#     points=(lon_flat, time_flat),  # Input points (longitude, time)
-#     values=t_anom_flat,           # Corresponding values
-#     xi=(lon_mesh, time_mesh),     # Output grid (longitude x time)
-#     method="linear"               # Interpolation method ('linear', 'cubic', etc.)
-# )
-
-# # Plot the Hovmöller diagram
-# fig, ax = plt.subplots(figsize=(10, 8))
-# mesh = ax.pcolormesh(
-#     lon_mesh,
-#     time_mesh,
-#     t_anom_grid,
-#     cmap=cmocean.cm.balance,  # Use your chosen colormap
-#     shading="auto"
-# )
-
-# # Customize the plot
-# ax.set_xlabel("Longitude")
-# ax.set_ylabel("Time")
-# ax.set_title("Hovmöller Diagram: Temperature Anomaly")
-# cbar = fig.colorbar(mesh, ax=ax)
-# cbar.set_label("Temperature Anomaly (°C)")
-
-# # Show the plot
-# plt.show()
-
-# Plot the figure: Trinidad Head Averaged Over Inshore 200km (Filtered)
-fig, (ax3, ax4) = plt.subplots(2, 1, figsize=(14,12), dpi=300)
-
-plot3 = ax3.plot(temp)
-# plot3 = ax3.contourf(temp, temp_Ygrid, cmap='RdYlBu_r', norm=divnorm_temp, levels=boundaries_temp)
-ax3.set_yticks((0, 200, 400, 600, 800, 1000))
-ax3.set_ylabel('Depth (m)')
-# ax3.set_xticks((-127, -126, -125, -124))
-# ax3.set_xlabel('Longitude')
-ax3.invert_yaxis()
-ax3.spines[:].set_linewidth(2)
-ax3.tick_params(width=2, top=True, right=True, direction='in')
-
-# plot4 = ax4.contourf(salt, salt_Ygrid, cmap='BrBG_r', norm=divnorm_salt, levels=boundaries_salt)
-# ax4.set_yticks((0, 200, 400, 600, 800, 1000))
-# ax4.set_ylabel('Depth (m)')
-# # ax4.set_xticks((-127, -126, -125, -124))
-# # ax4.set_xlabel('Longitude')
-# ax4.invert_yaxis()
-# ax4.spines[:].set_linewidth(2)
-# ax4.tick_params(width=2, top=True, right=True, direction='in')
-
-plt.tight_layout()
-plt.savefig(r'C:\Users\marqjace\OneDrive - Oregon State University\Desktop\Python\TH-Line_timeseries\figures\test3.png')
