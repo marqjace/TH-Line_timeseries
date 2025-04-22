@@ -213,8 +213,9 @@ temp_transects = {
     '10_24': transects_func.temp_10_24,
     '11_24': transects_func.temp_11_24,
     '3_25': transects_func.temp_3_25,
-    '4_25': transects_func.temp_3_25, # For cutoff values
-    '5_25': transects_func.temp_3_25, # For cutoff values
+    '4_25': transects_func.temp_4_25,
+    '5_25': transects_func.temp_4_25, # For cutoff values
+    '6_25': transects_func.temp_4_25, # For cutoff values
     }
 
 salt_transects = {
@@ -330,8 +331,9 @@ salt_transects = {
     '10_24': transects_func.salt_10_24,
     '11_24': transects_func.salt_11_24,
     '3_25': transects_func.salt_3_25,
-    '4_25': transects_func.salt_3_25, # For cutoff values
-    '5_25': transects_func.salt_3_25, # For cutoff values
+    '4_25': transects_func.salt_4_25, # For cutoff values
+    '5_25': transects_func.salt_4_25, # For cutoff values
+    '6_25': transects_func.salt_4_25, # For cutoff values
     }
 
 temp_anom = anomaly.temperature_anomaly(temp_transects, woa_temp_months)
@@ -451,7 +453,8 @@ temp_anoms = {
     '11_24': temp_anom[110],
     '3_25': temp_anom[111],
     '4_25': temp_anom[112],
-    '5_25': temp_anom[113],
+    '5_25': temp_anom[112], # For cutoff values
+    '6_25': temp_anom[112], # For cutoff values
 }
 
 salt_anoms = {
@@ -568,7 +571,8 @@ salt_anoms = {
     '11_24': salt_anom[110],
     '3_25': salt_anom[111],
     '4_25': salt_anom[112],
-    '5_25': salt_anom[113],
+    '5_25': salt_anom[112], # For cutoff values
+    '6_25': salt_anom[112], # For cutoff values
 }
 
 transect_times = {
@@ -684,8 +688,10 @@ transect_times = {
     'tran_10_24':np.array([datetime(2024,10,28).toordinal()]), 
     'tran_11_24':np.array([datetime(2024,11,22).toordinal()]),
     'tran_3_25':np.array([datetime(2025,3,19).toordinal()]),
-    'tran_4_25':np.array([datetime(2025,4,15).toordinal()]),   # For cutoff values
+    'tran_4_25':np.array([datetime(2025,4,8).toordinal()]),   
     'tran_5_25':np.array([datetime(2025,5,15).toordinal()]),   # For cutoff values
+    'tran_6_25':np.array([datetime(2025,6,15).toordinal()]),   # For cutoff values
+
 }
 
 

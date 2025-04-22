@@ -219,7 +219,10 @@ filepaths_deployments = [
     # Oct 2024 Deployment
     r'C:/Users/marqjace/TH_line/deployments/oct_2024/transect1/10_24_merged.nc',
     r'C:/Users/marqjace/TH_line/deployments/oct_2024/transect2/11_24_merged.nc',
+
+    # Mar 2025 Deployment
     r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect1/3_25_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect2/4_25_merged.nc',
 
 ]
 
@@ -344,6 +347,7 @@ temp_8_24_b= results[107]['temp_interp']
 temp_10_24= results[108]['temp_interp']
 temp_11_24= results[109]['temp_interp']
 temp_3_25= results[110]['temp_interp']
+temp_4_25= results[111]['temp_interp']
 
 
 # Salinity
@@ -457,6 +461,7 @@ salt_8_24_b= results[107]['salt_interp']
 salt_10_24= results[108]['salt_interp']
 salt_11_24= results[109]['salt_interp']
 salt_3_25= results[110]['salt_interp']
+salt_4_25= results[111]['salt_interp']
 
 # Time
 time_12_14_a = results[1]['time']
@@ -569,6 +574,7 @@ time_8_24_b= results[107]['time']
 time_10_24= results[108]['time']
 time_11_24= results[109]['time']
 time_3_25= results[110]['time']
+time_4_25= results[111]['time']
 
 
 # Longitude
@@ -682,6 +688,7 @@ lon_8_24_b= results[107]['lon']
 lon_10_24= results[108]['lon']
 lon_11_24= results[109]['lon']
 lon_3_25= results[110]['lon']
+lon_4_25= results[111]['lon']
 
 
 # # Temperature Hovmoller
