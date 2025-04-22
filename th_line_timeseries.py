@@ -683,7 +683,7 @@ transect_times = {
     # 'tran_8_24_b':np.array([datetime(2024,8,19).toordinal()]), # Bad salinity data
     'tran_10_24':np.array([datetime(2024,10,28).toordinal()]), 
     'tran_11_24':np.array([datetime(2024,11,22).toordinal()]),
-    'tran_3_25':np.array([datetime(2025,3,13).toordinal()]),
+    'tran_3_25':np.array([datetime(2025,3,19).toordinal()]),
     'tran_4_25':np.array([datetime(2025,4,15).toordinal()]),   # For cutoff values
     'tran_5_25':np.array([datetime(2025,5,15).toordinal()]),   # For cutoff values
 }
@@ -729,8 +729,8 @@ xgrid = np.arange(combined_temp['time'].min(), combined_temp['time'].max(), 30) 
 ygrid = np.arange(-10,1000,5) # Every 5m in depth
 
 print('Interpolating the temperature data...')
-combined_temp = combined_temp.interp(time=xgrid,depth=ygrid, method='combined_templinear') # Interpolate the data over the new grid
-temp_Xgrid, temp_Ygrid = np.meshgrid(combined_temp['time'], ['depth']) # Use meshgrid to create a regular grid of time and depth
+combined_temp = combined_temp.interp(time=xgrid,depth=ygrid, method='linear') # Interpolate the data over the new grid
+temp_Xgrid, temp_Ygrid = np.meshgrid(combined_temp['time'], combined_temp['depth']) # Use meshgrid to create a regular grid of time and depth
 
 temp = combined_temp.values.T # Transpose the temperature data
 temp = pd.DataFrame(temp) # Make it a pandas dataframe
