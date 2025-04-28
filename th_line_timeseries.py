@@ -53,7 +53,7 @@ woa_salt_months = {
 # SCTI / ONI Data
 # Data Access Here: https://spraydata.ucsd.edu/products/socal-index/
 
-dat = xr.open_dataset(r'C:/Users/marqjace/TH_line/scti_oni/socal_index_monthly_v1_8571_f367_229e_U1723054143245.nc', decode_times=False)
+dat = xr.open_dataset(r'C:/Users/marqjace/TH_line/scti_oni/socal_index_monthly_v1_8571_f367_229e_U1745878781460.nc', decode_times=False)
 scti = dat['scti']
 oni = dat['oni']
 scti_time = dat['time']
@@ -213,9 +213,10 @@ temp_transects = {
     '10_24': transects_func.temp_10_24,
     '11_24': transects_func.temp_11_24,
     '3_25': transects_func.temp_3_25,
-    '4_25': transects_func.temp_4_25,
-    '5_25': transects_func.temp_4_25, # For cutoff values
-    '6_25': transects_func.temp_4_25, # For cutoff values
+    '4_25_a': transects_func.temp_4_25_a,
+    '4_25_b': transects_func.temp_4_25_b,
+    '5_25': transects_func.temp_4_25_b, # For cutoff values
+    '6_25': transects_func.temp_4_25_b, # For cutoff values
     }
 
 salt_transects = {
@@ -331,9 +332,10 @@ salt_transects = {
     '10_24': transects_func.salt_10_24,
     '11_24': transects_func.salt_11_24,
     '3_25': transects_func.salt_3_25,
-    '4_25': transects_func.salt_4_25, # For cutoff values
-    '5_25': transects_func.salt_4_25, # For cutoff values
-    '6_25': transects_func.salt_4_25, # For cutoff values
+    '4_25_a': transects_func.salt_4_25_a,
+    '4_25_b': transects_func.salt_4_25_b,
+    '5_25': transects_func.salt_4_25_b, # For cutoff values
+    '6_25': transects_func.salt_4_25_b, # For cutoff values
     }
 
 temp_anom = anomaly.temperature_anomaly(temp_transects, woa_temp_months)
@@ -452,7 +454,8 @@ temp_anoms = {
     '10_24': temp_anom[109],
     '11_24': temp_anom[110],
     '3_25': temp_anom[111],
-    '4_25': temp_anom[112],
+    '4_25_a': temp_anom[112],
+    '4_25_b': temp_anom[113],
     '5_25': temp_anom[112], # For cutoff values
     '6_25': temp_anom[112], # For cutoff values
 }
@@ -570,7 +573,8 @@ salt_anoms = {
     '10_24': salt_anom[109],
     '11_24': salt_anom[110],
     '3_25': salt_anom[111],
-    '4_25': salt_anom[112],
+    '4_25_a': salt_anom[112],
+    '4_25_b': salt_anom[113],
     '5_25': salt_anom[112], # For cutoff values
     '6_25': salt_anom[112], # For cutoff values
 }
@@ -688,7 +692,8 @@ transect_times = {
     'tran_10_24':np.array([datetime(2024,10,28).toordinal()]), 
     'tran_11_24':np.array([datetime(2024,11,22).toordinal()]),
     'tran_3_25':np.array([datetime(2025,3,19).toordinal()]),
-    'tran_4_25':np.array([datetime(2025,4,8).toordinal()]),   
+    'tran_4_25_a':np.array([datetime(2025,4,8).toordinal()]),   
+    'tran_4_25_b':np.array([datetime(2025,4,23).toordinal()]),   
     'tran_5_25':np.array([datetime(2025,5,15).toordinal()]),   # For cutoff values
     'tran_6_25':np.array([datetime(2025,6,15).toordinal()]),   # For cutoff values
 
@@ -1003,7 +1008,7 @@ ax2.set_ylim(-8, 15)
 ax2.set_yticks([-4, 0, 4, 8, 12])
 ax2.set_yticklabels(['-4', '0', '4', '8', '12'])
 ax.set_xlabel('Year', fontsize='x-large')
-ax.set_xlim(datetime(2006,6,1).toordinal(), datetime(2025,6,1).toordinal())
+ax.set_xlim(datetime(2006,6,1).toordinal(), datetime(2025,5,1).toordinal())
 ax.spines[:].set_linewidth(2)
 ax.tick_params(width=2, top=True, right=False, direction='in')
 ax2.spines[:].set_linewidth(2)
@@ -1012,7 +1017,7 @@ plt.title('Temperature Anomaly Indices', pad=15, fontsize='x-large')
 lns = oni_plot + scti_plot + thi_plot + moci_plot
 labs = [l.get_label() for l in lns]
 ax.legend(lns, labs, loc=2, frameon=False, fontsize='x-large', labelcolor='linecolor')
-plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,6,1).toordinal(), ymin=0, ymax=0.35, alpha=0.15, color='gray')
+plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,5,1).toordinal(), ymin=0, ymax=0.35, alpha=0.15, color='gray')
 plt.savefig(f'C:/Users/marqjace/OneDrive - Oregon State University/Desktop/Python/TH-Line_timeseries/figures/t_anom_indices_MOCI_{timestamp}.png')
 
 
@@ -1033,21 +1038,21 @@ ax.set_xticks((datetime(2008,1,1).toordinal(), datetime(2010,1,1).toordinal(), d
 ax.set_xticklabels(('2008', '2010', '2012', '2014', '2016', '2018', '2020', '2022', '2024', '2025'), fontsize='x-large')
 # ax.set_yticklabels((-2, -1, 0, 1, 2, 3, 4), fontsize='x-large')
 ax.set_ylabel(r'Temperature Anomaly ($\degree$C)', fontsize='x-large')
-ax2.set_ylabel(r'MOCI Index', fontsize='x-large')
-ax2.set_ylim(-8, 15)
-ax2.set_yticks([-4, 0, 4, 8, 12])
-ax2.set_yticklabels(['-4', '0', '4', '8', '12'])
+# ax2.set_ylabel(r'MOCI Index', fontsize='x-large')
+# ax2.set_ylim(-8, 15)
+# ax2.set_yticks([-4, 0, 4, 8, 12])
+# ax2.set_yticklabels(['-4', '0', '4', '8', '12'])
 ax.set_xlabel('Year', fontsize='x-large')
-ax.set_xlim(datetime(2006,6,1).toordinal(), datetime(2025,6,1).toordinal())
+ax.set_xlim(datetime(2006,6,1).toordinal(), datetime(2025,5,1).toordinal())
 ax.spines[:].set_linewidth(2)
 ax.tick_params(width=2, top=True, right=False, direction='in')
-ax2.spines[:].set_linewidth(2)
-ax2.tick_params(width=2, top=True, right=True, direction='in')
+# ax2.spines[:].set_linewidth(2)
+# ax2.tick_params(width=2, top=True, right=True, direction='in')
 plt.title('Temperature Anomaly Indices', pad=15, fontsize='x-large')
 lns = oni_plot + scti_plot + thi_plot
 labs = [l.get_label() for l in lns]
 ax.legend(lns, labs, loc=2, frameon=False, fontsize='x-large', labelcolor='linecolor')
-plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,6,1).toordinal(), ymin=0, ymax=0.35, alpha=0.15, color='gray')
+plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,5,1).toordinal(), ymin=0, ymax=0.35, alpha=0.15, color='gray')
 plt.savefig(f"C:/Users/marqjace/OneDrive - Oregon State University/Desktop/Python/TH-Line_timeseries/figures/t_anom_indices_{timestamp}.png")
 
 print("Done!")
