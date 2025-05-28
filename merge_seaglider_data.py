@@ -48,8 +48,9 @@ def merge_seaglider_data(filenames, output_filename):
 
     # Save Merged File to NetCDF
     dat.to_netcdf(output_filename)
+    dat.close()
 
 # Example usage
-filenames = 'C:/Users/marqjace/TH_line/deployments/mar_2025/transect3/p266*.nc'
-output_filename = 'C:/Users/marqjace/TH_line/deployments/mar_2025/transect3/4_25_b_merged.nc'
+filenames = 'C:/Users/marqjace/TH_line/deployments/mar_2025/transect4/p266*.nc'
+output_filename = 'C:/Users/marqjace/TH_line/deployments/mar_2025/transect4/5_25_merged.nc'
 merge_seaglider_data(filenames, output_filename)

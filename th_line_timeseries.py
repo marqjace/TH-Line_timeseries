@@ -53,10 +53,10 @@ woa_salt_months = {
 # SCTI / ONI Data
 # Data Access Here: https://spraydata.ucsd.edu/products/socal-index/
 
-dat = xr.open_dataset(r'C:/Users/marqjace/TH_line/scti_oni/socal_index_monthly_v1_8571_f367_229e_U1745878781460.nc', decode_times=False)
-scti = dat['scti']
-oni = dat['oni']
-scti_time = dat['time']
+with xr.open_dataset(r'C:/Users/marqjace/TH_line/scti_oni/socal_index_monthly_v1_8571_f367_229e_U1748456038609.nc', decode_times=False) as dat:
+    scti = dat['scti']
+    oni = dat['oni']
+    scti_time = dat['time']
 
 # Convert time to ordinal time
 time2 = []
@@ -68,8 +68,9 @@ time2 = xr.DataArray(time2)
 scti_time = time2
 
 # California MOCI
-# García-Reyes, M. and Sydeman, W.J. (2017). California Multivariate Ocean Climate Indicator (MOCI) [Data set, V2]. Farallon Institute website, http://www.faralloninstitute.org/moci. Accessed [2 April 2025].
-dat2 = pd.read_csv(r'C:/Users/marqjace/TH_line/california_moci/CaliforniaMOCI.csv')
+# García-Reyes, M. and Sydeman, W.J. (2017). California Multivariate Ocean Climate Indicator (MOCI) [Data set, V2]. Farallon Institute website, http://www.faralloninstitute.org/moci. Accessed [28 May 2025].
+with open(r'C:/Users/marqjace/TH_line/california_moci/CaliforniaMOCI.csv', 'r') as file:
+    dat2 = pd.read_csv(file)
 dat2 = dat2.drop(['Year', 'Season', 'Central California (34.5-38N)', 'Southern California (32-34.5N)'], axis=1)
 dat2 = dat2.set_index(['time'])
 
@@ -215,8 +216,9 @@ temp_transects = {
     '3_25': transects_func.temp_3_25,
     '4_25_a': transects_func.temp_4_25_a,
     '4_25_b': transects_func.temp_4_25_b,
-    '5_25': transects_func.temp_4_25_b, # For cutoff values
-    '6_25': transects_func.temp_4_25_b, # For cutoff values
+    '5_25': transects_func.temp_5_25, 
+    '6_25': transects_func.temp_5_25, # For cutoff values
+    '7_25': transects_func.temp_5_25, # For cutoff values
     }
 
 salt_transects = {
@@ -334,8 +336,9 @@ salt_transects = {
     '3_25': transects_func.salt_3_25,
     '4_25_a': transects_func.salt_4_25_a,
     '4_25_b': transects_func.salt_4_25_b,
-    '5_25': transects_func.salt_4_25_b, # For cutoff values
-    '6_25': transects_func.salt_4_25_b, # For cutoff values
+    '5_25': transects_func.salt_5_25, 
+    '6_25': transects_func.salt_5_25, # For cutoff values
+    '7_25': transects_func.salt_5_25, # For cutoff values
     }
 
 temp_anom = anomaly.temperature_anomaly(temp_transects, woa_temp_months)
@@ -456,8 +459,9 @@ temp_anoms = {
     '3_25': temp_anom[111],
     '4_25_a': temp_anom[112],
     '4_25_b': temp_anom[113],
-    '5_25': temp_anom[112], # For cutoff values
-    '6_25': temp_anom[112], # For cutoff values
+    '5_25': temp_anom[114],
+    '6_25': temp_anom[114], # For cutoff values
+    '7_25': temp_anom[114], # For cutoff values
 }
 
 salt_anoms = {
@@ -575,8 +579,9 @@ salt_anoms = {
     '3_25': salt_anom[111],
     '4_25_a': salt_anom[112],
     '4_25_b': salt_anom[113],
-    '5_25': salt_anom[112], # For cutoff values
-    '6_25': salt_anom[112], # For cutoff values
+    '5_25': salt_anom[114],
+    '6_25': salt_anom[114], # For cutoff values
+    '7_25': salt_anom[114], # For cutoff values
 }
 
 transect_times = {
@@ -693,9 +698,10 @@ transect_times = {
     'tran_11_24':np.array([datetime(2024,11,22).toordinal()]),
     'tran_3_25':np.array([datetime(2025,3,19).toordinal()]),
     'tran_4_25_a':np.array([datetime(2025,4,8).toordinal()]),   
-    'tran_4_25_b':np.array([datetime(2025,4,23).toordinal()]),   
-    'tran_5_25':np.array([datetime(2025,5,15).toordinal()]),   # For cutoff values
+    'tran_4_25_b':np.array([datetime(2025,4,27).toordinal()]),   
+    'tran_5_25':np.array([datetime(2025,5,17).toordinal()]),   
     'tran_6_25':np.array([datetime(2025,6,15).toordinal()]),   # For cutoff values
+    'tran_7_25':np.array([datetime(2025,7,15).toordinal()]),   # For cutoff values
 
 }
 
@@ -860,7 +866,7 @@ ax1.set_yticks((0, 200, 400, 600))
 ax1.set_xticks((datetime(2015,1,1).toordinal(), datetime(2016,1,1).toordinal(), datetime(2017,1,1).toordinal(), datetime(2018,1,1).toordinal(), datetime(2019,1,1).toordinal(), datetime(2020,1,1).toordinal(), datetime(2021,1,1).toordinal(),
                datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal(), datetime(2025,1,1).toordinal()))
 ax1.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'))
-ax1.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,5,1).toordinal())
+ax1.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,6,1).toordinal())
 ax1.set_ylim(600, 0)
 ax1.spines[:].set_linewidth(2)
 ax1.tick_params(width=2, top=True, right=True, direction='in')
@@ -898,7 +904,7 @@ ax2.set_yticks((0, 200, 400, 600))
 ax2.set_xticks((datetime(2015,1,1).toordinal(), datetime(2016,1,1).toordinal(), datetime(2017,1,1).toordinal(), datetime(2018,1,1).toordinal(), datetime(2019,1,1).toordinal(), datetime(2020,1,1).toordinal(), datetime(2021,1,1).toordinal(),
                datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal(), datetime(2025,1,1).toordinal()))
 ax2.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'))
-ax2.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,5,1).toordinal())
+ax2.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,6,1).toordinal())
 ax2.set_ylim(600, 0)
 ax2.spines[:].set_linewidth(2)
 ax2.tick_params(width=2, top=True, right=True, direction='in')
@@ -938,7 +944,7 @@ ax1.set_yticks((0, 200, 400, 600))
 ax1.set_xticks((datetime(2015,1,1).toordinal(), datetime(2016,1,1).toordinal(), datetime(2017,1,1).toordinal(), datetime(2018,1,1).toordinal(), datetime(2019,1,1).toordinal(), datetime(2020,1,1).toordinal(), datetime(2021,1,1).toordinal(),
                datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal(), datetime(2025,1,1).toordinal()))
 ax1.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'))
-ax1.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,5,1).toordinal())
+ax1.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,6,1).toordinal())
 ax1.set_ylim(600, 0)
 ax1.spines[:].set_linewidth(2)
 ax1.tick_params(width=2, top=True, right=True, direction='in')
@@ -974,7 +980,7 @@ ax2.set_yticks((0, 200, 400, 600))
 ax2.set_xticks((datetime(2015,1,1).toordinal(), datetime(2016,1,1).toordinal(), datetime(2017,1,1).toordinal(), datetime(2018,1,1).toordinal(), datetime(2019,1,1).toordinal(), datetime(2020,1,1).toordinal(), datetime(2021,1,1).toordinal(),
                datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal(), datetime(2025,1,1).toordinal()))
 ax2.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'))
-ax2.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,5,1).toordinal())
+ax2.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,6,1).toordinal())
 ax2.set_ylim(600, 0)
 ax2.spines[:].set_linewidth(2)
 ax2.tick_params(width=2, top=True, right=True, direction='in')
@@ -1017,7 +1023,7 @@ plt.title('Temperature Anomaly Indices', pad=15, fontsize='x-large')
 lns = oni_plot + scti_plot + thi_plot + moci_plot
 labs = [l.get_label() for l in lns]
 ax.legend(lns, labs, loc=2, frameon=False, fontsize='x-large', labelcolor='linecolor')
-plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,5,1).toordinal(), ymin=0, ymax=0.35, alpha=0.15, color='gray')
+plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,6,1).toordinal(), ymin=0, ymax=0.35, alpha=0.15, color='gray')
 plt.savefig(f'C:/Users/marqjace/OneDrive - Oregon State University/Desktop/Python/TH-Line_timeseries/figures/t_anom_indices_MOCI_{timestamp}.png')
 
 
@@ -1052,7 +1058,7 @@ plt.title('Temperature Anomaly Indices', pad=15, fontsize='x-large')
 lns = oni_plot + scti_plot + thi_plot
 labs = [l.get_label() for l in lns]
 ax.legend(lns, labs, loc=2, frameon=False, fontsize='x-large', labelcolor='linecolor')
-plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,5,1).toordinal(), ymin=0, ymax=0.35, alpha=0.15, color='gray')
+plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,6,1).toordinal(), ymin=0, ymax=0.35, alpha=0.15, color='gray')
 plt.savefig(f"C:/Users/marqjace/OneDrive - Oregon State University/Desktop/Python/TH-Line_timeseries/figures/t_anom_indices_{timestamp}.png")
 
 print("Done!")
