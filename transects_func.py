@@ -226,6 +226,7 @@ filepaths_deployments = [
     r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect2/4_25_a_merged.nc',
     r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect3/4_25_b_merged.nc',
     r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect4/5_25_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect5/6_25_merged.nc'
 ]
 
 # Dictionary to store the results
@@ -352,6 +353,7 @@ temp_3_25= results[110]['temp_interp']
 temp_4_25_a= results[111]['temp_interp']
 temp_4_25_b= results[112]['temp_interp']
 temp_5_25 = results[113]['temp_interp']
+temp_6_25 = results[114]['temp_interp']
 
 
 # Salinity
@@ -468,6 +470,7 @@ salt_3_25= results[110]['salt_interp']
 salt_4_25_a= results[111]['salt_interp']
 salt_4_25_b= results[112]['salt_interp']
 salt_5_25 = results[113]['salt_interp']
+salt_6_25 = results[114]['salt_interp']
 
 # Time
 time_12_14_a = results[1]['time']
@@ -583,6 +586,7 @@ time_3_25= results[110]['time']
 time_4_25_a= results[111]['time']
 time_4_25_b= results[112]['time']
 time_5_25 = results[113]['time']
+time_6_25 = results[114]['time']
 
 
 # Longitude
@@ -699,6 +703,7 @@ lon_3_25= results[110]['lon']
 lon_4_25_a= results[111]['lon']
 lon_4_25_b= results[112]['lon']
 lon_5_25 = results[113]['lon']
+lon_6_25 = results[114]['lon']
 
 
 

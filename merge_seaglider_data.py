@@ -51,6 +51,6 @@ def merge_seaglider_data(filenames, output_filename):
     dat.close()
 
 # Example usage
-filenames = 'C:/Users/marqjace/TH_line/deployments/mar_2025/transect4/p266*.nc'
-output_filename = 'C:/Users/marqjace/TH_line/deployments/mar_2025/transect4/5_25_merged.nc'
+filenames = 'C:/Users/marqjace/TH_line/deployments/mar_2025/transect5/p266*.nc'
+output_filename = 'C:/Users/marqjace/TH_line/deployments/mar_2025/transect5/6_25_merged.nc'
 merge_seaglider_data(filenames, output_filename)

@@ -217,8 +217,9 @@ temp_transects = {
     '4_25_a': transects_func.temp_4_25_a,
     '4_25_b': transects_func.temp_4_25_b,
     '5_25': transects_func.temp_5_25, 
-    '6_25': transects_func.temp_5_25, # For cutoff values
-    '7_25': transects_func.temp_5_25, # For cutoff values
+    '6_25': transects_func.temp_6_25,
+    '7_25': transects_func.temp_6_25, # For cutoff values
+    '8_25': transects_func.temp_6_25, # For cutoff values
     }
 
 salt_transects = {
@@ -337,8 +338,9 @@ salt_transects = {
     '4_25_a': transects_func.salt_4_25_a,
     '4_25_b': transects_func.salt_4_25_b,
     '5_25': transects_func.salt_5_25, 
-    '6_25': transects_func.salt_5_25, # For cutoff values
-    '7_25': transects_func.salt_5_25, # For cutoff values
+    '6_25': transects_func.salt_6_25,
+    '7_25': transects_func.salt_6_25, # For cutoff values
+    '8_25': transects_func.salt_6_25, # For cutoff values
     }
 
 temp_anom = anomaly.temperature_anomaly(temp_transects, woa_temp_months)
@@ -460,8 +462,9 @@ temp_anoms = {
     '4_25_a': temp_anom[112],
     '4_25_b': temp_anom[113],
     '5_25': temp_anom[114],
-    '6_25': temp_anom[114], # For cutoff values
-    '7_25': temp_anom[114], # For cutoff values
+    '6_25': temp_anom[115],
+    '7_25': temp_anom[115], # For cutoff values
+    '8_25': temp_anom[115], # For cutoff values
 }
 
 salt_anoms = {
@@ -580,8 +583,9 @@ salt_anoms = {
     '4_25_a': salt_anom[112],
     '4_25_b': salt_anom[113],
     '5_25': salt_anom[114],
-    '6_25': salt_anom[114], # For cutoff values
-    '7_25': salt_anom[114], # For cutoff values
+    '6_25': salt_anom[115],
+    '7_25': salt_anom[115], # For cutoff values
+    '8_25': salt_anom[115], # For cutoff values
 }
 
 transect_times = {
@@ -700,8 +704,9 @@ transect_times = {
     'tran_4_25_a':np.array([datetime(2025,4,8).toordinal()]),   
     'tran_4_25_b':np.array([datetime(2025,4,27).toordinal()]),   
     'tran_5_25':np.array([datetime(2025,5,17).toordinal()]),   
-    'tran_6_25':np.array([datetime(2025,6,15).toordinal()]),   # For cutoff values
+    'tran_6_25':np.array([datetime(2025,6,3).toordinal()]),
     'tran_7_25':np.array([datetime(2025,7,15).toordinal()]),   # For cutoff values
+    'tran_8_25':np.array([datetime(2025,8,15).toordinal()]),   # For cutoff values
 
 }
 
@@ -866,7 +871,7 @@ ax1.set_yticks((0, 200, 400, 600))
 ax1.set_xticks((datetime(2015,1,1).toordinal(), datetime(2016,1,1).toordinal(), datetime(2017,1,1).toordinal(), datetime(2018,1,1).toordinal(), datetime(2019,1,1).toordinal(), datetime(2020,1,1).toordinal(), datetime(2021,1,1).toordinal(),
                datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal(), datetime(2025,1,1).toordinal()))
 ax1.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'))
-ax1.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,6,1).toordinal())
+ax1.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,7,1).toordinal())
 ax1.set_ylim(600, 0)
 ax1.spines[:].set_linewidth(2)
 ax1.tick_params(width=2, top=True, right=True, direction='in')
@@ -904,7 +909,7 @@ ax2.set_yticks((0, 200, 400, 600))
 ax2.set_xticks((datetime(2015,1,1).toordinal(), datetime(2016,1,1).toordinal(), datetime(2017,1,1).toordinal(), datetime(2018,1,1).toordinal(), datetime(2019,1,1).toordinal(), datetime(2020,1,1).toordinal(), datetime(2021,1,1).toordinal(),
                datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal(), datetime(2025,1,1).toordinal()))
 ax2.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'))
-ax2.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,6,1).toordinal())
+ax2.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,7,1).toordinal())
 ax2.set_ylim(600, 0)
 ax2.spines[:].set_linewidth(2)
 ax2.tick_params(width=2, top=True, right=True, direction='in')
@@ -944,7 +949,7 @@ ax1.set_yticks((0, 200, 400, 600))
 ax1.set_xticks((datetime(2015,1,1).toordinal(), datetime(2016,1,1).toordinal(), datetime(2017,1,1).toordinal(), datetime(2018,1,1).toordinal(), datetime(2019,1,1).toordinal(), datetime(2020,1,1).toordinal(), datetime(2021,1,1).toordinal(),
                datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal(), datetime(2025,1,1).toordinal()))
 ax1.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'))
-ax1.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,6,1).toordinal())
+ax1.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,7,1).toordinal())
 ax1.set_ylim(600, 0)
 ax1.spines[:].set_linewidth(2)
 ax1.tick_params(width=2, top=True, right=True, direction='in')
@@ -980,7 +985,7 @@ ax2.set_yticks((0, 200, 400, 600))
 ax2.set_xticks((datetime(2015,1,1).toordinal(), datetime(2016,1,1).toordinal(), datetime(2017,1,1).toordinal(), datetime(2018,1,1).toordinal(), datetime(2019,1,1).toordinal(), datetime(2020,1,1).toordinal(), datetime(2021,1,1).toordinal(),
                datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal(), datetime(2025,1,1).toordinal()))
 ax2.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'))
-ax2.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,6,1).toordinal())
+ax2.set_xlim(datetime(2014,12,4).toordinal(), datetime(2025,7,1).toordinal())
 ax2.set_ylim(600, 0)
 ax2.spines[:].set_linewidth(2)
 ax2.tick_params(width=2, top=True, right=True, direction='in')
@@ -1023,7 +1028,7 @@ plt.title('Temperature Anomaly Indices', pad=15, fontsize='x-large')
 lns = oni_plot + scti_plot + thi_plot + moci_plot
 labs = [l.get_label() for l in lns]
 ax.legend(lns, labs, loc=2, frameon=False, fontsize='x-large', labelcolor='linecolor')
-plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,6,1).toordinal(), ymin=0, ymax=0.35, alpha=0.15, color='gray')
+plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,7,1).toordinal(), ymin=0, ymax=0.35, alpha=0.15, color='gray')
 plt.tight_layout()
 plt.savefig(f'C:/Users/marqjace/OneDrive - Oregon State University/Desktop/Python/TH-Line_timeseries/figures/t_anom_indices_MOCI_{timestamp}.png')
 
@@ -1059,7 +1064,7 @@ plt.title('Temperature Anomaly Indices', pad=15, fontsize='x-large')
 lns = oni_plot + scti_plot + thi_plot
 labs = [l.get_label() for l in lns]
 ax.legend(lns, labs, loc=2, frameon=False, fontsize='x-large', labelcolor='linecolor')
-plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,6,1).toordinal(), ymin=0, ymax=0.35, alpha=0.15, color='gray')
+plt.axvspan(datetime(2006,6,1).toordinal(), datetime(2025,7,1).toordinal(), ymin=0, ymax=0.35, alpha=0.15, color='gray')
 plt.tight_layout()
 plt.savefig(f"C:/Users/marqjace/OneDrive - Oregon State University/Desktop/Python/TH-Line_timeseries/figures/t_anom_indices_{timestamp}.png")
 
