@@ -226,7 +226,12 @@ filepaths_deployments = [
     r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect2/4_25_a_merged.nc',
     r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect3/4_25_b_merged.nc',
     r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect4/5_25_merged.nc',
-    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect5/6_25_merged.nc'
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect5/6_25_a_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect6/6_25_b_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect7/7_25_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect8/8_25_a_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect9/9_25_a_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect10/9_25_b_merged.nc',
 ]
 
 # Dictionary to store the results
@@ -353,7 +358,12 @@ temp_3_25= results[110]['temp_interp']
 temp_4_25_a= results[111]['temp_interp']
 temp_4_25_b= results[112]['temp_interp']
 temp_5_25 = results[113]['temp_interp']
-temp_6_25 = results[114]['temp_interp']
+temp_6_25_a = results[114]['temp_interp']
+temp_6_25_b = results[115]['temp_interp']
+temp_7_25 = results[116]['temp_interp']
+temp_8_25_a = results[117]['temp_interp']
+temp_9_25_a = results[118]['temp_interp']
+temp_9_25_b = results[119]['temp_interp']
 
 
 # Salinity
@@ -470,7 +480,12 @@ salt_3_25= results[110]['salt_interp']
 salt_4_25_a= results[111]['salt_interp']
 salt_4_25_b= results[112]['salt_interp']
 salt_5_25 = results[113]['salt_interp']
-salt_6_25 = results[114]['salt_interp']
+salt_6_25_a = results[114]['salt_interp']
+salt_6_25_b = results[115]['salt_interp']
+salt_7_25 = results[116]['salt_interp']
+salt_8_25_a = results[117]['salt_interp']
+salt_9_25_a = results[118]['salt_interp']
+salt_9_25_b = results[119]['salt_interp']
 
 # Time
 time_12_14_a = results[1]['time']
@@ -586,8 +601,12 @@ time_3_25= results[110]['time']
 time_4_25_a= results[111]['time']
 time_4_25_b= results[112]['time']
 time_5_25 = results[113]['time']
-time_6_25 = results[114]['time']
-
+time_6_25_a = results[114]['time']
+time_6_25_b = results[115]['time']
+time_7_25 = results[116]['time']
+time_8_25_a = results[117]['time']
+time_9_25_a = results[118]['time']
+time_9_25_b = results[119]['time']
 
 # Longitude
 lon_12_14_a = results[1]['lon']
@@ -703,8 +722,12 @@ lon_3_25= results[110]['lon']
 lon_4_25_a= results[111]['lon']
 lon_4_25_b= results[112]['lon']
 lon_5_25 = results[113]['lon']
-lon_6_25 = results[114]['lon']
-
+lon_6_25_a = results[114]['lon']
+lon_6_25_b = results[115]['lon']
+lon_7_25 = results[116]['lon']
+lon_8_25_a = results[117]['lon']
+lon_9_25_a = results[118]['lon']
+lon_9_25_b = results[119]['lon']
 
 
 # # Temperature Hovmoller
