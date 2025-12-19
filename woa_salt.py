@@ -6,7 +6,7 @@ import xarray as xr
 import matplotlib.pyplot as plt
 import cmocean
 
-def woa_temp(filepath, month_idx, lat=41.625, lon_range=(-126.625, -124.375), depth_range=(0, 1000)):
+def woa_salt(filepath, month_idx, lat=41.625, lon_range=(-126.625, -124.375), depth_range=(0, 1000)):
     # Load dataset
     ds = xr.open_dataset(filepath, decode_times=False)
 
@@ -73,7 +73,7 @@ filepaths_salt = [
 results = {}
 
 for i, filepath in enumerate(filepaths_salt, start=1):
-    result = woa_temp(filepath, month_idx=i)
+    result = woa_salt(filepath, month_idx=i)
     results[i] = result  # Store the result by month index
 
 # Now the 'results' dictionary contains all the variables for each month.

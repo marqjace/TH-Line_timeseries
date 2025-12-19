@@ -54,7 +54,7 @@ woa_salt_months = {
 # SCTI / ONI Data
 # Data Access Here: https://spraydata.ucsd.edu/products/socal-index/
 
-with xr.open_dataset(r'C:/Users/marqjace/TH_line/scti_oni/socal_index_monthly_v1_8571_f367_229e_U1748456038609.nc', decode_times=False) as dat:
+with xr.open_dataset(r'C:/Users/marqjace/TH_line/scti_oni/socal_index_monthly_v1_8571_f367_229e_U1766170430759.nc', decode_times=False) as dat:
     scti = dat['scti']
     oni = dat['oni']
     scti_time = dat['time']
@@ -224,8 +224,11 @@ temp_transects = {
     '8_25_a': transects_func.temp_8_25_a, 
     '9_25_a': transects_func.temp_9_25_a,
     '9_25_b': transects_func.temp_9_25_b,
-    '10_25': transects_func.temp_9_25_b, # For cutoff values
-    '11_25': transects_func.temp_9_25_b, # For cutoff values
+    '10_25_a': transects_func.temp_10_25_a,
+    '10_25_b': transects_func.temp_10_25_b,
+    '11_25': transects_func.temp_11_25,
+    '12_25': transects_func.temp_11_25, # For cutoff values
+    '1_26': transects_func.temp_11_25, # For cutoff values
     }
 
 salt_transects = {
@@ -343,15 +346,29 @@ salt_transects = {
     '3_25': transects_func.salt_3_25,
     '4_25_a': transects_func.salt_4_25_a,
     '4_25_b': transects_func.salt_4_25_b,
-    '5_25': transects_func.salt_5_25, 
+    '5_25': transects_func.salt_5_25,
     '6_25_a': transects_func.salt_6_25_a,
     '6_25_b': transects_func.salt_6_25_b,
     '7_25': transects_func.salt_7_25,
     '8_25_a': transects_func.salt_8_25_a,
     '9_25_a': transects_func.salt_9_25_a,
     '9_25_b': transects_func.salt_9_25_b,
-    '10_25': transects_func.salt_9_25_b, # For cutoff values
-    '11_25': transects_func.salt_9_25_b, # For cutoff values
+    '10_25_a': transects_func.salt_10_25_a,
+    '10_25_b': transects_func.salt_10_25_b,
+    '11_25': transects_func.salt_11_25,
+    '12_25': transects_func.salt_11_25, # For cutoff values
+    '1_26': transects_func.salt_11_25, # For cutoff values
+    '6_25_a': transects_func.salt_6_25_a,
+    '6_25_b': transects_func.salt_6_25_b,
+    '7_25': transects_func.salt_7_25,
+    '8_25_a': transects_func.salt_8_25_a,
+    '9_25_a': transects_func.salt_9_25_a,
+    '9_25_b': transects_func.salt_9_25_b,
+    '10_25_a': transects_func.salt_10_25_a,
+    '10_25_b': transects_func.salt_10_25_b,
+    '11_25': transects_func.salt_11_25,
+    '12_25': transects_func.salt_11_25, # For cutoff values
+    '1_26': transects_func.salt_11_25, # For cutoff values
     }
 
 temp_anom = anomaly.temperature_anomaly(temp_transects, woa_temp_months)
@@ -479,8 +496,11 @@ temp_anoms = {
     '8_25_a': temp_anom[118],
     '9_25_a': temp_anom[119],
     '9_25_b': temp_anom[120],
-    '10_25': temp_anom[120], # For cutoff values
-    '11_25': temp_anom[120], # For cutoff values
+    '10_25_a': temp_anom[121],
+    '10_25_b': temp_anom[122],
+    '11_25': temp_anom[123],
+    '12_25': temp_anom[123], # For cutoff values
+    '1_26': temp_anom[123], # For cutoff values
 }
 
 salt_anoms = {
@@ -605,8 +625,11 @@ salt_anoms = {
     '8_25_a': salt_anom[118],
     '9_25_a': salt_anom[119],
     '9_25_b': salt_anom[120],
-    '10_25': salt_anom[120], # For cutoff values
-    '11_25': salt_anom[120], # For cutoff values
+    '10_25_a': salt_anom[121],
+    '10_25_b': salt_anom[122],
+    '11_25': salt_anom[123],
+    '12_25': salt_anom[123], # For cutoff values
+    '1_26': salt_anom[123], # For cutoff values
 }
 
 transect_times = {
@@ -731,8 +754,11 @@ transect_times = {
     'tran_8_25_a':np.array([datetime(2025,8,9).toordinal()]),
     'tran_9_25_a':np.array([datetime(2025,9,1).toordinal()]),
     'tran_9_25_b':np.array([datetime(2025,9,22).toordinal()]), 
-    'tran_10_25':np.array([datetime(2025,10,15).toordinal()]), # For cutoff values
-    'tran_11_25':np.array([datetime(2025,11,15).toordinal()]),  # For cutoff values
+    'tran_10_25_a':np.array([datetime(2025,10,11).toordinal()]),
+    'tran_10_25_b':np.array([datetime(2025,10,28).toordinal()]),
+    'tran_11_25':np.array([datetime(2025,11,23).toordinal()]),
+    'tran_12_25':np.array([datetime(2025,12,15).toordinal()]),  # For cutoff values
+    'tran_1_26':np.array([datetime(2026,1,15).toordinal()]),  # For cutoff values
 
 }
 
@@ -903,6 +929,47 @@ timestamp = datetime.now().strftime("%Y%m%d_%H%M%S") # Timestamp for file naming
 
 
 # Contour Plots
+print('Plotting recent s-anom')
+fig, (ax2) = plt.subplots(1, 1, figsize=(14,8), dpi=300)
+
+plot2 = ax2.contourf(salt_Xgrid, salt_Ygrid, salt_box, cmap='BrBG_r', norm=divnorm_salt, levels=boundaries_salt)
+lines2 = ax2.contour(salt_Xgrid, salt_Ygrid, salt_box, colors='black', norm=divnorm_salt, levels=levels_salt, alpha=0.75)
+deployment2_nov_14 = ax2.hlines(y=570, xmin=datetime(2014,12,4).toordinal(), xmax=datetime(2015,3,9).toordinal(), color='k')
+deployment2_mar_15 = ax2.hlines(y=570, xmin=datetime(2015,3,9).toordinal(), xmax=datetime(2015,9,17).toordinal(), color='k')
+deployment2_sep_15 = ax2.hlines(y=570, xmin=datetime(2015,9,17).toordinal(), xmax=datetime(2016,5,16).toordinal(), color='k')
+deployment2_may_16 = ax2.hlines(y=570, xmin=datetime(2016,5,23).toordinal(), xmax=datetime(2016,10,21).toordinal(), color='k')
+deployment2_oct_16 = ax2.hlines(y=570, xmin=datetime(2016,10,21).toordinal(), xmax=datetime(2017,6,5).toordinal(), color='k')
+deployment2_jun_17 = ax2.hlines(y=570, xmin=datetime(2017,6,5).toordinal(), xmax=datetime(2017,11,6).toordinal(), color='k')
+deployment2_apr_18 = ax2.hlines(y=570, xmin=datetime(2018,4,17).toordinal(), xmax=datetime(2018,10,2).toordinal(), color='k')
+deployment2_nov_18 = ax2.hlines(y=570, xmin=datetime(2018,11,7).toordinal(), xmax=datetime(2019,4,9).toordinal(), color='k')
+deployment2_apr_19 = ax2.hlines(y=570, xmin=datetime(2019,4,9).toordinal(), xmax=datetime(2019,8,19).toordinal(), color='k')
+deployment2_sep_19 = ax2.hlines(y=570, xmin=datetime(2019,9,16).toordinal(), xmax=datetime(2020,3,19).toordinal(), color='k')
+deployment2_sep_20 = ax2.hlines(y=570, xmin=datetime(2020,9,16).toordinal(), xmax=datetime(2021,2,6).toordinal(), color='k')
+deployment2_nov_21 = ax2.hlines(y=570, xmin=datetime(2021,11,12).toordinal(), xmax=datetime(2022,6,16).toordinal(), color='k')
+deployment2_jul_22 = ax2.hlines(y=570, xmin=datetime(2022,7,29).toordinal(), xmax=datetime(2023,1,26).toordinal(), color='k')
+deployment2_jan_23 = ax2.hlines(y=570, xmin=datetime(2023,1,26).toordinal(), xmax=datetime(2023,8,14).toordinal(), color='k')
+deployment2_oct_23 = ax2.hlines(y=570, xmin=datetime(2023,10,13).toordinal(), xmax=datetime(2024,4,12).toordinal(), color='k')
+deployment2_apr_24 = ax2.hlines(y=570, xmin=datetime(2024,4,12).toordinal(), xmax=datetime(2024,8,9).toordinal(), color='k')
+deployment2_oct_24 = ax2.hlines(y=570, xmin=datetime(2024,10,21).toordinal(), xmax=datetime(2024,12,4).toordinal(), color='k')
+deployment2_mar_25 = ax2.hlines(y=570, xmin=datetime(2025,3,21).toordinal(), xmax=salt_Xgrid.max(), color='k')
+ax2.clabel(lines2, lines2.levels, inline=True, fontsize=10)
+ax2.invert_yaxis()
+ax2.set_ylabel('Depth (m)')
+# ax2.text(datetime(2022,10,20).toordinal(), 530, 'Salinity Anomaly', fontsize='large')
+ax2.set_xlabel('Year')
+ax2.set_yticks((0, 200, 400, 600))
+ax2.set_xticks((datetime(2015,1,1).toordinal(), datetime(2016,1,1).toordinal(), datetime(2017,1,1).toordinal(), datetime(2018,1,1).toordinal(), datetime(2019,1,1).toordinal(), datetime(2020,1,1).toordinal(), datetime(2021,1,1).toordinal(),
+               datetime(2022,1,1).toordinal(), datetime(2023,1,1).toordinal(), datetime(2024,1,1).toordinal(), datetime(2025,1,1).toordinal()))
+ax2.set_xticklabels(('2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'))
+ax2.set_xlim(datetime(2025,3,1).toordinal(), datetime(2026,1,1).toordinal())
+ax2.set_ylim(600, 0)
+ax2.spines[:].set_linewidth(2)
+ax2.tick_params(width=2, top=True, right=True, direction='in')
+cbar2 = plt.colorbar(plot2, shrink=0.5, location='right', pad=0.015)
+cbar2.outline.set_linewidth(2)
+cbar2.set_label(label=r'(PSU)', rotation=0, labelpad=10)
+plt.tight_layout()
+plt.savefig(f'C:/Users/marqjace/OneDrive - Oregon State University/Desktop/Python/TH-Line_timeseries/figures/t_anom_timeseries_recent_{timestamp}.png')
 
 # Plot the figure: Trinidad Head Averaged Over Inshore 200km (Filtered)
 print(f'Plotting t_anom_timeseries_{timestamp}.png...')

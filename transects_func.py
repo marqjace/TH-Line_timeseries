@@ -47,24 +47,15 @@ def transect(filepath, transect_idx):
                 xi = (Xgrid, Ygrid),
                 method = 'linear')
     
-    # xn2, yn2 = 91, 122
+    if "salt_corrected" in ds.data_vars:
+        salt_corrected = ds.salt_corrected
 
-    # # grid window
-    # xmin2, xmax2 = -129.625, -124.375
-    # ymin2, ymax2 = datetime(2015,1,1), datetime(2025,1,1)
-
-    # # Generate a regular grid to interpolate the data
-    # xgrid2 = np.linspace(xmin2, xmax2, xn2)
-    # ygrid2 = np.linspace(ymin2, ymax2, yn2)
-    # Xgrid2, Ygrid2 = np.meshgrid(xgrid2, ygrid2)
-    
-    # temp_interp_hovmoller = griddata(points = (lon, time),
-    #             values = temp,
-    #             xi = (Xgrid2, Ygrid2),
-    #             method = 'linear')
-
-    # Return variables you want to save
-    return {
+        salt_corrected_interp = griddata(points = (lon, depth),
+                values = salt_corrected,
+                xi = (Xgrid, Ygrid),
+                method = 'linear')
+        
+        return {
         'lon': lon,
         'depth': depth,
         'temp': temp,
@@ -72,8 +63,31 @@ def transect(filepath, transect_idx):
         'time': time,
         'temp_interp': temp_interp,
         'salt_interp': salt_interp,
+        'salt_corrected_interp': salt_corrected_interp,
         # 'temp_interp_hovmoller': temp_interp_hovmoller,
-    }
+        }
+    else:
+        return {
+        'lon': lon,
+        'depth': depth,
+        'temp': temp,
+        'salt': salt,
+        'time': time,
+        'temp_interp': temp_interp,
+        'salt_interp': salt_interp,
+        }
+
+    # # Return variables you want to save
+    # return {
+    #     'lon': lon,
+    #     'depth': depth,
+    #     'temp': temp,
+    #     'salt': salt,
+    #     'time': time,
+    #     'temp_interp': temp_interp,
+    #     'salt_interp': salt_interp,
+    #     # 'temp_interp_hovmoller': temp_interp_hovmoller,
+    # }
 
 # Example usage for multiple months
 filepaths_deployments = [
@@ -222,16 +236,21 @@ filepaths_deployments = [
     r'C:/Users/marqjace/TH_line/deployments/oct_2024/transect2/11_24_merged.nc',
 
     # Mar 2025 Deployment
-    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect1/3_25_merged.nc',
-    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect2/4_25_a_merged.nc',
-    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect3/4_25_b_merged.nc',
-    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect4/5_25_merged.nc',
-    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect5/6_25_a_merged.nc',
-    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect6/6_25_b_merged.nc',
-    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect7/7_25_merged.nc',
-    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect8/8_25_a_merged.nc',
-    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect9/9_25_a_merged.nc',
-    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect10/9_25_b_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect1/corrected/3_25_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect2/corrected/4_25_a_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect3/corrected/4_25_b_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect4/corrected/5_25_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect5/corrected/6_25_a_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect6/corrected/6_25_b_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect7/corrected/7_25_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect8/corrected/8_25_a_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect9/corrected/9_25_a_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect10/corrected/9_25_b_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect11/corrected/10_25_a_merged.nc',
+    r'C:/Users/marqjace/TH_line/deployments/mar_2025/transect12/corrected/10_25_b_merged.nc',
+
+    # Nov 2025 Deployment
+    r'C:/Users/marqjace/TH_line/deployments/nov_2025/transect1/11_25_merged.nc',
 ]
 
 # Dictionary to store the results
@@ -364,6 +383,9 @@ temp_7_25 = results[116]['temp_interp']
 temp_8_25_a = results[117]['temp_interp']
 temp_9_25_a = results[118]['temp_interp']
 temp_9_25_b = results[119]['temp_interp']
+temp_10_25_a = results[120]['temp_interp']
+temp_10_25_b = results[121]['temp_interp']
+temp_11_25 = results[122]['temp_interp']
 
 
 # Salinity
@@ -476,16 +498,19 @@ salt_8_24_a= results[106]['salt_interp']
 salt_8_24_b= results[107]['salt_interp']
 salt_10_24= results[108]['salt_interp']
 salt_11_24= results[109]['salt_interp']
-salt_3_25= results[110]['salt_interp']
-salt_4_25_a= results[111]['salt_interp']
-salt_4_25_b= results[112]['salt_interp']
-salt_5_25 = results[113]['salt_interp']
-salt_6_25_a = results[114]['salt_interp']
-salt_6_25_b = results[115]['salt_interp']
-salt_7_25 = results[116]['salt_interp']
-salt_8_25_a = results[117]['salt_interp']
-salt_9_25_a = results[118]['salt_interp']
-salt_9_25_b = results[119]['salt_interp']
+salt_3_25= results[110]['salt_corrected_interp']
+salt_4_25_a= results[111]['salt_corrected_interp']
+salt_4_25_b= results[112]['salt_corrected_interp']
+salt_5_25 = results[113]['salt_corrected_interp']
+salt_6_25_a = results[114]['salt_corrected_interp']
+salt_6_25_b = results[115]['salt_corrected_interp']
+salt_7_25 = results[116]['salt_corrected_interp']
+salt_8_25_a = results[117]['salt_corrected_interp']
+salt_9_25_a = results[118]['salt_corrected_interp']
+salt_9_25_b = results[119]['salt_corrected_interp']
+salt_10_25_a = results[120]['salt_corrected_interp']
+salt_10_25_b = results[121]['salt_corrected_interp']
+salt_11_25 = results[122]['salt_interp']
 
 # Time
 time_12_14_a = results[1]['time']
@@ -607,6 +632,9 @@ time_7_25 = results[116]['time']
 time_8_25_a = results[117]['time']
 time_9_25_a = results[118]['time']
 time_9_25_b = results[119]['time']
+time_10_25_a = results[120]['time']
+time_10_25_b = results[121]['time']
+time_11_25 = results[122]['time']
 
 # Longitude
 lon_12_14_a = results[1]['lon']
@@ -728,6 +756,9 @@ lon_7_25 = results[116]['lon']
 lon_8_25_a = results[117]['lon']
 lon_9_25_a = results[118]['lon']
 lon_9_25_b = results[119]['lon']
+lon_10_25_a = results[120]['lon']
+lon_10_25_b = results[121]['lon']
+lon_11_25 = results[122]['lon']
 
 
 # # Temperature Hovmoller
