@@ -43,7 +43,7 @@ def merge_seaglider_data(filenames, output_filename):
             'ctd_pressure': 'pressure',
             'ctd_depth': 'depth',
             'ctd_time': 'time_raw',
-            'salinity_corrected': 'salt_corrected',
+            # 'salinity_corrected': 'salt_corrected',
             # 'aanderaa4831_dissolved_oxygen': 'oxygen',
             # 'aanderaa4330_dissolved_oxygen': 'oxygen',
             # 'sbe43_dissolved_oxygen': 'oxygen'
@@ -71,6 +71,6 @@ def merge_seaglider_data(filenames, output_filename):
     # dat.close()
 
 # Example usage
-filenames = r'C:/Users/marqjace/TH_line/deployments/nov_2025/transect2/p686*.nc'
-output_filename = r'C:/Users/marqjace/TH_line/deployments/nov_2025/transect2/12_25_merged.nc'
+filenames = r'C:/Users/marqjace/TH_line/deployments/nov_2025/transect3/p686*.nc'
+output_filename = r'C:/Users/marqjace/TH_line/deployments/nov_2025/transect3/1_26_merged.nc'
 merge_seaglider_data(filenames, output_filename)
